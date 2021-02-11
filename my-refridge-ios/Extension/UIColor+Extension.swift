@@ -10,11 +10,11 @@ import UIKit
 extension UIColor {
     
     enum Color: String {
-        case purpleFridge = "#7E67EC"
-        case blueFridge = "#5B86E5"
-        case greenFridge = "459F5D"
-        case orangeFirdge = "F5A76B"
-        case redFridge = "EB4D3C"
+        case purple = "#7E67EC"
+        case blue = "#5B86E5"
+        case green = "459F5D"
+        case orange = "F5A76B"
+        case red = "EB4D3C"
     }
     
     static func refridgeColor(color: Color) -> UIColor {
