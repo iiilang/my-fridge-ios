@@ -23,7 +23,6 @@
 		AE71CDFC25D5578E0083B343 /* ShoppingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CDFB25D5578E0083B343 /* ShoppingViewController.swift */; };
 		AE71CE0625D55B990083B343 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CE0525D55B990083B343 /* TabBarController.swift */; };
 		AE71CE0925D55EC20083B343 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CE0825D55EC20083B343 /* UIColor+Extension.swift */; };
-		AE71CE2325D593C20083B343 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CE2225D593C20083B343 /* CustomTabBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,7 +44,6 @@
 		AE71CDFB25D5578E0083B343 /* ShoppingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingViewController.swift; sourceTree = "<group>"; };
 		AE71CE0525D55B990083B343 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		AE71CE0825D55EC20083B343 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
-		AE71CE2225D593C20083B343 /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
 		C7D22686949F0F7FFDA2F9B2 /* Pods_my_refridge_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_my_refridge_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D45ED25FAC895369BDDBD053 /* Pods-my-refridge-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-my-refridge-ios.debug.xcconfig"; path = "Target Support Files/Pods-my-refridge-ios/Pods-my-refridge-ios.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -116,7 +114,6 @@
 				AE71CDBE25D542400083B343 /* LaunchScreen.storyboard */,
 				AE71CDB725D5423E0083B343 /* ViewController.swift */,
 				AE71CE0525D55B990083B343 /* TabBarController.swift */,
-				AE71CE2225D593C20083B343 /* CustomTabBar.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -292,7 +289,6 @@
 				AE71CDB825D5423E0083B343 /* ViewController.swift in Sources */,
 				AE71CDB425D5423E0083B343 /* AppDelegate.swift in Sources */,
 				AE71CDB625D5423E0083B343 /* SceneDelegate.swift in Sources */,
-				AE71CE2325D593C20083B343 /* CustomTabBar.swift in Sources */,
 				AE71CE0625D55B990083B343 /* TabBarController.swift in Sources */,
 				AE71CDF825D54EEB0083B343 /* UIFont+Extension.swift in Sources */,
 				AE71CDFC25D5578E0083B343 /* ShoppingViewController.swift in Sources */,
