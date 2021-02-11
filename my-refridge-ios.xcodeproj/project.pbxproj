@@ -3,27 +3,43 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA3173477643BD0CC4F35D39 /* Pods_my_refridge_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7D22686949F0F7FFDA2F9B2 /* Pods_my_refridge_ios.framework */; };
 		AE71CDB425D5423E0083B343 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CDB325D5423E0083B343 /* AppDelegate.swift */; };
 		AE71CDB625D5423E0083B343 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CDB525D5423E0083B343 /* SceneDelegate.swift */; };
 		AE71CDB825D5423E0083B343 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CDB725D5423E0083B343 /* ViewController.swift */; };
-		AE71CDBB25D5423E0083B343 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE71CDB925D5423E0083B343 /* Main.storyboard */; };
 		AE71CDBD25D542400083B343 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE71CDBC25D542400083B343 /* Assets.xcassets */; };
 		AE71CDC025D542400083B343 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE71CDBE25D542400083B343 /* LaunchScreen.storyboard */; };
+		AE71CDE725D54C660083B343 /* NotoSansKR-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = AE71CDE525D54A610083B343 /* NotoSansKR-Black.otf */; };
+		AE71CDEE25D54C690083B343 /* NotoSansKR-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = AE71CDE125D54A600083B343 /* NotoSansKR-Bold.otf */; };
+		AE71CDEF25D54C6A0083B343 /* NotoSansKR-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = AE71CDE225D54A600083B343 /* NotoSansKR-Light.otf */; };
+		AE71CDF125D54C6C0083B343 /* NotoSansKR-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = AE71CDE425D54A600083B343 /* NotoSansKR-Medium.otf */; };
+		AE71CDF325D54C6E0083B343 /* NotoSansKR-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = AE71CDE625D54A610083B343 /* NotoSansKR-Regular.otf */; };
+		AE71CDF525D54C700083B343 /* NotoSansKR-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = AE71CDE325D54A600083B343 /* NotoSansKR-Thin.otf */; };
+		AE71CDF825D54EEB0083B343 /* UIFont+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CDF725D54EEB0083B343 /* UIFont+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4EAC0306DCBE1A430114261D /* Pods-my-refridge-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-my-refridge-ios.release.xcconfig"; path = "Target Support Files/Pods-my-refridge-ios/Pods-my-refridge-ios.release.xcconfig"; sourceTree = "<group>"; };
 		AE71CDB025D5423E0083B343 /* my-refridge-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "my-refridge-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE71CDB325D5423E0083B343 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE71CDB525D5423E0083B343 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		AE71CDB725D5423E0083B343 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		AE71CDBA25D5423E0083B343 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		AE71CDBC25D542400083B343 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AE71CDBC25D542400083B343 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "my-refridge-ios/Resource/Assets.xcassets"; sourceTree = SOURCE_ROOT; };
 		AE71CDBF25D542400083B343 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		AE71CDC125D542400083B343 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE71CDC125D542400083B343 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "my-refridge-ios/Supporting Files/Info.plist"; sourceTree = SOURCE_ROOT; };
+		AE71CDE125D54A600083B343 /* NotoSansKR-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansKR-Bold.otf"; sourceTree = "<group>"; };
+		AE71CDE225D54A600083B343 /* NotoSansKR-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansKR-Light.otf"; sourceTree = "<group>"; };
+		AE71CDE325D54A600083B343 /* NotoSansKR-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansKR-Thin.otf"; sourceTree = "<group>"; };
+		AE71CDE425D54A600083B343 /* NotoSansKR-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansKR-Medium.otf"; sourceTree = "<group>"; };
+		AE71CDE525D54A610083B343 /* NotoSansKR-Black.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansKR-Black.otf"; sourceTree = "<group>"; };
+		AE71CDE625D54A610083B343 /* NotoSansKR-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "NotoSansKR-Regular.otf"; sourceTree = "<group>"; };
+		AE71CDF725D54EEB0083B343 /* UIFont+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Extension.swift"; sourceTree = "<group>"; };
+		C7D22686949F0F7FFDA2F9B2 /* Pods_my_refridge_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_my_refridge_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D45ED25FAC895369BDDBD053 /* Pods-my-refridge-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-my-refridge-ios.debug.xcconfig"; path = "Target Support Files/Pods-my-refridge-ios/Pods-my-refridge-ios.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,17 +47,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA3173477643BD0CC4F35D39 /* Pods_my_refridge_ios.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9A7FB162606674784532EDB0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C7D22686949F0F7FFDA2F9B2 /* Pods_my_refridge_ios.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		AE71CDA725D5423E0083B343 = {
 			isa = PBXGroup;
 			children = (
 				AE71CDB225D5423E0083B343 /* my-refridge-ios */,
 				AE71CDB125D5423E0083B343 /* Products */,
+				DDA5F6D0020BB6B147E02C80 /* Pods */,
+				9A7FB162606674784532EDB0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,15 +83,70 @@
 		AE71CDB225D5423E0083B343 /* my-refridge-ios */ = {
 			isa = PBXGroup;
 			children = (
-				AE71CDB325D5423E0083B343 /* AppDelegate.swift */,
-				AE71CDB525D5423E0083B343 /* SceneDelegate.swift */,
-				AE71CDB725D5423E0083B343 /* ViewController.swift */,
-				AE71CDB925D5423E0083B343 /* Main.storyboard */,
-				AE71CDBC25D542400083B343 /* Assets.xcassets */,
-				AE71CDBE25D542400083B343 /* LaunchScreen.storyboard */,
-				AE71CDC125D542400083B343 /* Info.plist */,
+				AE71CDCF25D543BA0083B343 /* Extension */,
+				AE71CDCE25D543B20083B343 /* Resource */,
+				AE71CDC925D5431B0083B343 /* Supporting Files */,
+				AE71CDCB25D543460083B343 /* UI */,
 			);
 			path = "my-refridge-ios";
+			sourceTree = "<group>";
+		};
+		AE71CDC925D5431B0083B343 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				AE71CDB325D5423E0083B343 /* AppDelegate.swift */,
+				AE71CDB525D5423E0083B343 /* SceneDelegate.swift */,
+				AE71CDC125D542400083B343 /* Info.plist */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		AE71CDCB25D543460083B343 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				AE71CDBE25D542400083B343 /* LaunchScreen.storyboard */,
+				AE71CDB725D5423E0083B343 /* ViewController.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		AE71CDCE25D543B20083B343 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				AE71CDE025D549F30083B343 /* Font */,
+				AE71CDBC25D542400083B343 /* Assets.xcassets */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
+		AE71CDCF25D543BA0083B343 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				AE71CDF725D54EEB0083B343 /* UIFont+Extension.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		AE71CDE025D549F30083B343 /* Font */ = {
+			isa = PBXGroup;
+			children = (
+				AE71CDE525D54A610083B343 /* NotoSansKR-Black.otf */,
+				AE71CDE125D54A600083B343 /* NotoSansKR-Bold.otf */,
+				AE71CDE225D54A600083B343 /* NotoSansKR-Light.otf */,
+				AE71CDE425D54A600083B343 /* NotoSansKR-Medium.otf */,
+				AE71CDE625D54A610083B343 /* NotoSansKR-Regular.otf */,
+				AE71CDE325D54A600083B343 /* NotoSansKR-Thin.otf */,
+			);
+			path = Font;
+			sourceTree = "<group>";
+		};
+		DDA5F6D0020BB6B147E02C80 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				D45ED25FAC895369BDDBD053 /* Pods-my-refridge-ios.debug.xcconfig */,
+				4EAC0306DCBE1A430114261D /* Pods-my-refridge-ios.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,9 +156,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = AE71CDC425D542400083B343 /* Build configuration list for PBXNativeTarget "my-refridge-ios" */;
 			buildPhases = (
+				9A860982591C7BA8E8EED34A /* [CP] Check Pods Manifest.lock */,
 				AE71CDAC25D5423E0083B343 /* Sources */,
 				AE71CDAD25D5423E0083B343 /* Frameworks */,
 				AE71CDAE25D5423E0083B343 /* Resources */,
+				D1593D5C62B8587324C74FA7 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -124,13 +208,60 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE71CDF125D54C6C0083B343 /* NotoSansKR-Medium.otf in Resources */,
+				AE71CDE725D54C660083B343 /* NotoSansKR-Black.otf in Resources */,
+				AE71CDEF25D54C6A0083B343 /* NotoSansKR-Light.otf in Resources */,
 				AE71CDC025D542400083B343 /* LaunchScreen.storyboard in Resources */,
+				AE71CDF525D54C700083B343 /* NotoSansKR-Thin.otf in Resources */,
+				AE71CDEE25D54C690083B343 /* NotoSansKR-Bold.otf in Resources */,
 				AE71CDBD25D542400083B343 /* Assets.xcassets in Resources */,
-				AE71CDBB25D5423E0083B343 /* Main.storyboard in Resources */,
+				AE71CDF325D54C6E0083B343 /* NotoSansKR-Regular.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		9A860982591C7BA8E8EED34A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-my-refridge-ios-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D1593D5C62B8587324C74FA7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-my-refridge-ios/Pods-my-refridge-ios-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-my-refridge-ios/Pods-my-refridge-ios-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-my-refridge-ios/Pods-my-refridge-ios-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AE71CDAC25D5423E0083B343 /* Sources */ = {
@@ -140,20 +271,13 @@
 				AE71CDB825D5423E0083B343 /* ViewController.swift in Sources */,
 				AE71CDB425D5423E0083B343 /* AppDelegate.swift in Sources */,
 				AE71CDB625D5423E0083B343 /* SceneDelegate.swift in Sources */,
+				AE71CDF825D54EEB0083B343 /* UIFont+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		AE71CDB925D5423E0083B343 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				AE71CDBA25D5423E0083B343 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		AE71CDBE25D542400083B343 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -283,12 +407,13 @@
 		};
 		AE71CDC525D542400083B343 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D45ED25FAC895369BDDBD053 /* Pods-my-refridge-ios.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7UU57B563T;
-				INFOPLIST_FILE = "my-refridge-ios/Info.plist";
+				INFOPLIST_FILE = "my-refridge-ios/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -302,12 +427,13 @@
 		};
 		AE71CDC625D542400083B343 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4EAC0306DCBE1A430114261D /* Pods-my-refridge-ios.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7UU57B563T;
-				INFOPLIST_FILE = "my-refridge-ios/Info.plist";
+				INFOPLIST_FILE = "my-refridge-ios/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
