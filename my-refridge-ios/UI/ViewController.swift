@@ -22,15 +22,22 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
+        self.view.backgroundColor = .white
+
+        setup()
+        makeConstraints()
+    }
+
+    func setup() {
         self.view.addSubview(testButton)
+    }
+    
+    func makeConstraints() {
         testButton.snp.makeConstraints { make in
             make.left.right.equalTo(self.view).inset(120)
             make.centerX.centerY.equalTo(self.view)
-            
         }
     }
-
 
 }
 

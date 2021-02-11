@@ -10,15 +10,16 @@ import UIKit
 extension UIColor {
     
     enum Color: String {
-        case purple = "#7E67EC"
-        case blue = "#5B86E5"
-        case green = "459F5D"
-        case orange = "F5A76B"
-        case red = "EB4D3C"
+        case purple = "#7E67ECFF"
+        case blue = "#5B86E5FF"
+        case green = "459F5DFF"
+        case orange = "F5A76BFf"
+        case red = "EB4D3CFF"
+        case gray = "#454C53FF"
     }
     
     static func refridgeColor(color: Color) -> UIColor {
-        return UIColor(hex: color.rawValue) ?? UIColor(red: 0, green: 0, blue: 0, alpha: 0)
+        return UIColor(hex: color.rawValue) ?? UIColor(red: 0, green: 0, blue: 0, alpha: 1)
     }
     
     public convenience init?(hex: String) {
