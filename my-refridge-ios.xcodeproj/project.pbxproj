@@ -23,6 +23,12 @@
 		AE71CDFC25D5578E0083B343 /* ShoppingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CDFB25D5578E0083B343 /* ShoppingViewController.swift */; };
 		AE71CE0625D55B990083B343 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CE0525D55B990083B343 /* TabBarController.swift */; };
 		AE71CE0925D55EC20083B343 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CE0825D55EC20083B343 /* UIColor+Extension.swift */; };
+		AE71CE3225D6AB9E0083B343 /* ShoppingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CE3125D6AB9E0083B343 /* ShoppingTableViewCell.swift */; };
+		AE71CE3625D6ABB90083B343 /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CE3525D6ABB90083B343 /* BaseView.swift */; };
+		AE71CE3A25D6ABF10083B343 /* BaseTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CE3925D6ABF10083B343 /* BaseTableViewCell.swift */; };
+		AE71CE3D25D6AC180083B343 /* BaseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CE3C25D6AC180083B343 /* BaseCollectionViewCell.swift */; };
+		AE71CE4625D6D9480083B343 /* ShoppingMemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CE4525D6D9480083B343 /* ShoppingMemo.swift */; };
+		AE71CE4B25D6E9690083B343 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CE4A25D6E9690083B343 /* String+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +50,12 @@
 		AE71CDFB25D5578E0083B343 /* ShoppingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingViewController.swift; sourceTree = "<group>"; };
 		AE71CE0525D55B990083B343 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		AE71CE0825D55EC20083B343 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
+		AE71CE3125D6AB9E0083B343 /* ShoppingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingTableViewCell.swift; sourceTree = "<group>"; };
+		AE71CE3525D6ABB90083B343 /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
+		AE71CE3925D6ABF10083B343 /* BaseTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewCell.swift; sourceTree = "<group>"; };
+		AE71CE3C25D6AC180083B343 /* BaseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewCell.swift; sourceTree = "<group>"; };
+		AE71CE4525D6D9480083B343 /* ShoppingMemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingMemo.swift; sourceTree = "<group>"; };
+		AE71CE4A25D6E9690083B343 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		C7D22686949F0F7FFDA2F9B2 /* Pods_my_refridge_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_my_refridge_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D45ED25FAC895369BDDBD053 /* Pods-my-refridge-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-my-refridge-ios.debug.xcconfig"; path = "Target Support Files/Pods-my-refridge-ios/Pods-my-refridge-ios.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -89,6 +101,8 @@
 		AE71CDB225D5423E0083B343 /* my-refridge-ios */ = {
 			isa = PBXGroup;
 			children = (
+				AE71CE3425D6ABA30083B343 /* Base */,
+				AE71CE4425D6D9330083B343 /* Model */,
 				AE71CDCF25D543BA0083B343 /* Extension */,
 				AE71CDCE25D543B20083B343 /* Resource */,
 				AE71CDC925D5431B0083B343 /* Supporting Files */,
@@ -132,6 +146,7 @@
 			children = (
 				AE71CDF725D54EEB0083B343 /* UIFont+Extension.swift */,
 				AE71CE0825D55EC20083B343 /* UIColor+Extension.swift */,
+				AE71CE4A25D6E9690083B343 /* String+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -153,8 +168,27 @@
 			isa = PBXGroup;
 			children = (
 				AE71CDFB25D5578E0083B343 /* ShoppingViewController.swift */,
+				AE71CE3125D6AB9E0083B343 /* ShoppingTableViewCell.swift */,
 			);
 			path = "Shpping Memo";
+			sourceTree = "<group>";
+		};
+		AE71CE3425D6ABA30083B343 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				AE71CE3525D6ABB90083B343 /* BaseView.swift */,
+				AE71CE3925D6ABF10083B343 /* BaseTableViewCell.swift */,
+				AE71CE3C25D6AC180083B343 /* BaseCollectionViewCell.swift */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		AE71CE4425D6D9330083B343 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				AE71CE4525D6D9480083B343 /* ShoppingMemo.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		DDA5F6D0020BB6B147E02C80 /* Pods */ = {
@@ -286,11 +320,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE71CE0925D55EC20083B343 /* UIColor+Extension.swift in Sources */,
+				AE71CE3225D6AB9E0083B343 /* ShoppingTableViewCell.swift in Sources */,
 				AE71CDB825D5423E0083B343 /* ViewController.swift in Sources */,
+				AE71CE4625D6D9480083B343 /* ShoppingMemo.swift in Sources */,
 				AE71CDB425D5423E0083B343 /* AppDelegate.swift in Sources */,
+				AE71CE3D25D6AC180083B343 /* BaseCollectionViewCell.swift in Sources */,
+				AE71CE4B25D6E9690083B343 /* String+Extension.swift in Sources */,
 				AE71CDB625D5423E0083B343 /* SceneDelegate.swift in Sources */,
 				AE71CE0625D55B990083B343 /* TabBarController.swift in Sources */,
+				AE71CE3625D6ABB90083B343 /* BaseView.swift in Sources */,
 				AE71CDF825D54EEB0083B343 /* UIFont+Extension.swift in Sources */,
+				AE71CE3A25D6ABF10083B343 /* BaseTableViewCell.swift in Sources */,
 				AE71CDFC25D5578E0083B343 /* ShoppingViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

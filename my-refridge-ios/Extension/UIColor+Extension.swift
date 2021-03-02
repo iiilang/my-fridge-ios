@@ -16,10 +16,13 @@ extension UIColor {
         case orange = "F5A76BFf"
         case red = "EB4D3CFF"
         case gray = "#454C53FF"
+        case black = "#26282BFF"
+        case lightgray = "#C9CDD2FF"
+        case redDelete = "#EB4D3CFF"
     }
     
     static func refridgeColor(color: Color) -> UIColor {
-        return UIColor(hex: color.rawValue) ?? UIColor(red: 0, green: 0, blue: 0, alpha: 1)
+        return UIColor(hex: color.rawValue) ?? UIColor(red: 255, green: 0, blue: 0, alpha: 1)
     }
     
     public convenience init?(hex: String) {
