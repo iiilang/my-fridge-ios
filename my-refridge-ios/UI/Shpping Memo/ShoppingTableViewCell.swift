@@ -18,13 +18,20 @@ class ShoppingTableViewCell: BaseTableViewCell {
 
     var cellDelegate: ShoppingTableViewCellDelegate?
     
+    var first: Bool = true
+    
     var shoppingMemo: ShoppingMemo? {
         didSet {
             checkBox.isSelected = shoppingMemo?.isSelected ?? false
             
-            let string = shoppingMemo?.memo ?? ""
+            var string = shoppingMemo?.memo ?? ""
             
             if checkBox.isSelected {
+                
+                if !first {
+                    string = memoField.text ?? "⚠warning"
+                }
+                
                 memoField.isUserInteractionEnabled = false
                 
                 memoField.text = nil
@@ -39,6 +46,7 @@ class ShoppingTableViewCell: BaseTableViewCell {
                 memoField.textColor = UIColor.refridgeColor(color: .gray)
             }
         }
+        
     }
     
     

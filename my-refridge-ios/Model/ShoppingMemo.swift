@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ShoppingMemo {
+struct ShoppingMemo: Codable {
     var memo: String = ""
     var isSelected: Bool = false
 }

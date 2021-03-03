@@ -12,9 +12,12 @@ import UIKit
 class ShoppingViewController:
     UIViewController {
     
-    var shoppingList: Array<ShoppingMemo> = [ShoppingMemo(memo: "aaaaa", isSelected: false), ShoppingMemo(memo: "당근", isSelected: false), ShoppingMemo(memo: "키위", isSelected: false), ShoppingMemo(memo: "지금은 소녀시대", isSelected: false), ShoppingMemo(memo: "아 또 뭐 사야하냐", isSelected: false), ShoppingMemo(memo: "러ㅓㅓㅓ러ㅓㅓㅓasdfkewjfa;", isSelected: false), ShoppingMemo(memo: "ㅓasdf", isSelected: false), ShoppingMemo(memo: "testtesttest", isSelected: false), ShoppingMemo(memo: "귀찮.", isSelected: false), ShoppingMemo(memo: "ㅇ", isSelected: false), ShoppingMemo(memo: "테이블뷰 삽질~", isSelected: false), ShoppingMemo(memo: "테이블뷰 삽질2~", isSelected: false)]
+    var shoppingList: Array<ShoppingMemo> = [ShoppingMemo]()
+        //[ShoppingMemo(memo: "aaaaa", isSelected: false), ShoppingMemo(memo: "당근", isSelected: false), ShoppingMemo(memo: "키위", isSelected: false), ShoppingMemo(memo: "지금은 소녀시대", isSelected: false), ShoppingMemo(memo: "아 또 뭐 사야하냐", isSelected: false), ShoppingMemo(memo: "러ㅓㅓㅓ러ㅓㅓㅓasdfkewjfa;", isSelected: false), ShoppingMemo(memo: "ㅓasdf", isSelected: false), ShoppingMemo(memo: "testtesttest", isSelected: false), ShoppingMemo(memo: "귀찮.", isSelected: false), ShoppingMemo(memo: "ㅇ", isSelected: false), ShoppingMemo(memo: "테이블뷰 삽질~", isSelected: false), ShoppingMemo(memo: "테이블뷰 삽질2~", isSelected: false)]
         
     var cell = ShoppingTableViewCell()
+    
+    var first: Bool = true
     
     private let copyButton: UIButton = {
         let btn = UIButton()
@@ -61,7 +64,6 @@ class ShoppingViewController:
         tableView.isUserInteractionEnabled = true
         tableView.allowsSelection = false
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 17, bottom: 0, right: 17)
-        tableView.dragInteractionEnabled = true
         
         return tableView
     }()
@@ -82,6 +84,7 @@ class ShoppingViewController:
         tableviewSetUp()
         keyboardSetUp()
         bindConstraints()
+        //self.tableView.reloadData()
     }
     
     func setup() {
@@ -91,16 +94,42 @@ class ShoppingViewController:
         self.view.addSubview(line)
         self.view.addSubview(dateLabel)
         self.view.backgroundColor = .white
+        
+        readShoppingList()
     }
     
+    func readShoppingList() {
+        
+        let jsonDecoder = JSONDecoder()
+        
+        let file = "shopping.json"
+        
+        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            let fileURL = dir.appendingPathComponent(file)
+            
+            do {
+                let shoppingData = try Data(contentsOf: fileURL)
+                self.shoppingList = try jsonDecoder.decode([ShoppingMemo].self, from: shoppingData)
+                first = false
+            }
+            catch { print("something went wrong")}
+        }
+        
+    }
     
     func tableviewSetUp() {
+        
         let footerView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 45))
         footerView.addSubview(writeButton)
         
         tableView.delegate = self
         tableView.dataSource = self
+        
+        tableView.dragInteractionEnabled = true
         tableView.dragDelegate = self
+        tableView.dropDelegate = self
+        
+        
         tableView.tableFooterView = footerView
        
         self.view.addSubview(tableView)
@@ -137,7 +166,8 @@ class ShoppingViewController:
         }
         tableView.snp.makeConstraints { make in
             make.top.equalTo(dateLabel.snp.bottom).offset(5)
-            make.left.right.bottom.equalToSuperview()
+            make.left.right.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
         
         writeButton.snp.makeConstraints { make in
@@ -177,11 +207,17 @@ class ShoppingViewController:
         tableView.insertRows(at: [IndexPath.init(row: self.shoppingList.count-1, section: 0)], with: .automatic)
         tableView.endUpdates()
         cell.memoField.becomeFirstResponder()
+        
+        saveToJsonFile()
     }
 }
 
-extension ShoppingViewController: UITableViewDelegate, UITableViewDataSource, UITableViewDragDelegate, UIDropInteractionDelegate
+extension ShoppingViewController: UITableViewDelegate, UITableViewDataSource, UITableViewDragDelegate, UITableViewDropDelegate, UIDropInteractionDelegate
 {
+    func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
+        
+    }
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return shoppingList.count
@@ -198,7 +234,9 @@ extension ShoppingViewController: UITableViewDelegate, UITableViewDataSource, UI
         cell.memoField.tag = indexPath.row
         
         cell.contentView.isUserInteractionEnabled = false //셀 안의 버튼을 누를 수 없을때.
+        
         cell.shoppingMemo = shoppingList[indexPath.row]
+        cell.first = self.first
         
         
         //hamburger button
@@ -289,11 +327,13 @@ extension ShoppingViewController: UITextFieldDelegate {
         let info = notification.userInfo!
         let keyboardFrame: CGRect = (info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         var keyboardHeight = keyboardFrame.height
-        let tabBarHeight = TabBarController().tabBar.frame.height
+        let tabBarHeight = TabBarController().tabBar.frame.size.height
+        //print(tabBarHeight)
         
         if #available(iOS 11.0, *) {
             let bottomInset = view.safeAreaInsets.bottom
             keyboardHeight -= bottomInset
+            
         }
         //노치 있는 아이폰에선 safearea height 만큼 더 빼야되는데... 처리를 어떻게 하지?
         //탭바를 붙여놓은 경우엔 bottom 값이 0이 나옴 이런....
@@ -314,13 +354,33 @@ extension ShoppingViewController: UITextFieldDelegate {
 
 extension ShoppingViewController: ShoppingTableViewCellDelegate {
     
+    func saveToJsonFile() {
+        let file = "shopping.json"
+        
+        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            
+            let fileURL = dir.appendingPathComponent(file)
+            
+            do {
+                let jsonEncoder = JSONEncoder()
+                jsonEncoder.outputFormatting = .prettyPrinted
+                let jsonData = try! jsonEncoder.encode(shoppingList)
+                
+                try jsonData.write(to: fileURL)
+            }
+            catch { print("not save") }
+        }
+    }
+    
     func pressCheckButton(_ tag: Int) {
         shoppingList[tag].isSelected = !shoppingList[tag].isSelected
-        print("\(tag) \(shoppingList[tag].isSelected)")
+        saveToJsonFile()
     }
     func changeMemo(at tag: Int,to string: String) {
         shoppingList[tag].memo = string
         print(shoppingList[tag])
+        
+        saveToJsonFile()
     }
     func deleteRow(at tag: Int) {
         let indexPath = IndexPath.init(row: tag, section: 0)
