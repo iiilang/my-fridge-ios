@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		AA3173477643BD0CC4F35D39 /* Pods_my_refridge_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7D22686949F0F7FFDA2F9B2 /* Pods_my_refridge_ios.framework */; };
+		AE15EF5C25F0048600EE1D97 /* FridgeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE15EF5B25F0048600EE1D97 /* FridgeViewController.swift */; };
 		AE71CDB425D5423E0083B343 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CDB325D5423E0083B343 /* AppDelegate.swift */; };
 		AE71CDB625D5423E0083B343 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CDB525D5423E0083B343 /* SceneDelegate.swift */; };
-		AE71CDB825D5423E0083B343 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CDB725D5423E0083B343 /* ViewController.swift */; };
 		AE71CDBD25D542400083B343 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE71CDBC25D542400083B343 /* Assets.xcassets */; };
 		AE71CDC025D542400083B343 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE71CDBE25D542400083B343 /* LaunchScreen.storyboard */; };
 		AE71CDE725D54C660083B343 /* NotoSansKR-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = AE71CDE525D54A610083B343 /* NotoSansKR-Black.otf */; };
@@ -33,10 +33,10 @@
 
 /* Begin PBXFileReference section */
 		4EAC0306DCBE1A430114261D /* Pods-my-refridge-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-my-refridge-ios.release.xcconfig"; path = "Target Support Files/Pods-my-refridge-ios/Pods-my-refridge-ios.release.xcconfig"; sourceTree = "<group>"; };
+		AE15EF5B25F0048600EE1D97 /* FridgeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FridgeViewController.swift; sourceTree = "<group>"; };
 		AE71CDB025D5423E0083B343 /* my-refridge-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "my-refridge-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE71CDB325D5423E0083B343 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE71CDB525D5423E0083B343 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		AE71CDB725D5423E0083B343 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		AE71CDBC25D542400083B343 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "my-refridge-ios/Resource/Assets.xcassets"; sourceTree = SOURCE_ROOT; };
 		AE71CDBF25D542400083B343 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AE71CDC125D542400083B343 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "my-refridge-ios/Supporting Files/Info.plist"; sourceTree = SOURCE_ROOT; };
@@ -78,6 +78,14 @@
 				C7D22686949F0F7FFDA2F9B2 /* Pods_my_refridge_ios.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AE15EF4C25EFFC7900EE1D97 /* Fridge */ = {
+			isa = PBXGroup;
+			children = (
+				AE15EF5B25F0048600EE1D97 /* FridgeViewController.swift */,
+			);
+			path = Fridge;
 			sourceTree = "<group>";
 		};
 		AE71CDA725D5423E0083B343 = {
@@ -124,9 +132,9 @@
 		AE71CDCB25D543460083B343 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				AE15EF4C25EFFC7900EE1D97 /* Fridge */,
 				AE71CDFF25D557B20083B343 /* Shpping Memo */,
 				AE71CDBE25D542400083B343 /* LaunchScreen.storyboard */,
-				AE71CDB725D5423E0083B343 /* ViewController.swift */,
 				AE71CE0525D55B990083B343 /* TabBarController.swift */,
 			);
 			path = UI;
@@ -321,11 +329,11 @@
 			files = (
 				AE71CE0925D55EC20083B343 /* UIColor+Extension.swift in Sources */,
 				AE71CE3225D6AB9E0083B343 /* ShoppingTableViewCell.swift in Sources */,
-				AE71CDB825D5423E0083B343 /* ViewController.swift in Sources */,
 				AE71CE4625D6D9480083B343 /* ShoppingMemo.swift in Sources */,
 				AE71CDB425D5423E0083B343 /* AppDelegate.swift in Sources */,
 				AE71CE3D25D6AC180083B343 /* BaseCollectionViewCell.swift in Sources */,
 				AE71CE4B25D6E9690083B343 /* String+Extension.swift in Sources */,
+				AE15EF5C25F0048600EE1D97 /* FridgeViewController.swift in Sources */,
 				AE71CDB625D5423E0083B343 /* SceneDelegate.swift in Sources */,
 				AE71CE0625D55B990083B343 /* TabBarController.swift in Sources */,
 				AE71CE3625D6ABB90083B343 /* BaseView.swift in Sources */,

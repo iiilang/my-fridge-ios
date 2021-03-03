@@ -135,6 +135,14 @@ class ShoppingViewController:
         self.view.addSubview(tableView)
         self.view.addInteraction(UIDropInteraction(delegate: self))
         
+        /*
+        let tabBarHeight = TabBarController().tabBarHeight
+        let defaultTabBarHeight = TabBarController().tabBar.frame.size.height
+        UIView.animate(withDuration: 0.1, animations: { () -> Void in
+            self.tableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom:  tabBarHeight - defaultTabBarHeight, right: 0.0)
+            self.tableView.scrollIndicatorInsets = self.tableView.contentInset
+        }) */
+        
         setEditing(true, animated: true)
     }
     
@@ -192,6 +200,8 @@ class ShoppingViewController:
         let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { action in
             self.shoppingList.removeAll()
             self.tableView.reloadData()
+            
+            self.saveToJsonFile()
         }
         alert.addAction(defaultAction)
         alert.addAction(deleteAction)
@@ -259,6 +269,8 @@ extension ShoppingViewController: UITableViewDelegate, UITableViewDataSource, UI
             self.shoppingList.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             completion(true)
+            
+            self.saveToJsonFile()
         }
     
         
@@ -292,6 +304,8 @@ extension ShoppingViewController: UITableViewDelegate, UITableViewDataSource, UI
         let movedCell = self.shoppingList[sourceIndexPath.row]
         shoppingList.remove(at: sourceIndexPath.row)
         shoppingList.insert(movedCell, at: destinationIndexPath.row)
+        
+        saveToJsonFile()
     }
     
     override func setEditing(_ editing: Bool, animated: Bool) {
@@ -327,19 +341,18 @@ extension ShoppingViewController: UITextFieldDelegate {
         let info = notification.userInfo!
         let keyboardFrame: CGRect = (info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         var keyboardHeight = keyboardFrame.height
-        let tabBarHeight = TabBarController().tabBar.frame.size.height
-        //print(tabBarHeight)
+
+        let defaultTabBarHeight = TabBarController().tabBar.frame.size.height
         
         if #available(iOS 11.0, *) {
             let bottomInset = view.safeAreaInsets.bottom
             keyboardHeight -= bottomInset
-            
         }
         //노치 있는 아이폰에선 safearea height 만큼 더 빼야되는데... 처리를 어떻게 하지?
         //탭바를 붙여놓은 경우엔 bottom 값이 0이 나옴 이런....
         
         UIView.animate(withDuration: 0.1, animations: { () -> Void in
-            self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight - tabBarHeight, right: 0)
+            self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight - defaultTabBarHeight , right: 0)
             self.tableView.scrollIndicatorInsets = self.tableView.contentInset
         })
     }
@@ -386,6 +399,8 @@ extension ShoppingViewController: ShoppingTableViewCellDelegate {
         let indexPath = IndexPath.init(row: tag, section: 0)
         shoppingList.remove(at: indexPath.row)
         tableView.reloadData() //textfield tag랑 array index 안맞는 문제 해결!!
+        
+        saveToJsonFile()
     }
 }
 
