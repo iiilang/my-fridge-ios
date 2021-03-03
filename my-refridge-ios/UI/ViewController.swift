@@ -15,6 +15,7 @@ class ViewController: UIViewController {
         btn.setTitle("button", for: .normal)
         btn.backgroundColor = .orange
         btn.titleLabel?.font = UIFont.notoSansKR()
+        btn.addTarget(self, action: #selector(pressButton), for: .touchUpInside)
         return btn
     }()
     
@@ -25,18 +26,22 @@ class ViewController: UIViewController {
         self.view.backgroundColor = .white
 
         setup()
-        makeConstraints()
+        bindConstraints()
     }
 
     func setup() {
         self.view.addSubview(testButton)
     }
     
-    func makeConstraints() {
+    func bindConstraints() {
         testButton.snp.makeConstraints { make in
             make.left.right.equalTo(self.view).inset(120)
             make.centerX.centerY.equalTo(self.view)
         }
+    }
+    
+    @objc func pressButton() {
+        print("button")
     }
 
 }
