@@ -58,7 +58,6 @@ class ShoppingViewController:
     
     private let tableView: UITableView = {
         let tableView = UITableView()
-        
         tableView.register(ShoppingTableViewCell.self, forCellReuseIdentifier: "ShoppingTableViewCell")
         
         tableView.isUserInteractionEnabled = true
@@ -158,7 +157,7 @@ class ShoppingViewController:
         }
         label.snp.makeConstraints { make in
             make.top.equalTo(self.view.safeAreaLayoutGuide)
-            make.left.right.equalTo(self.view).inset(144)
+            make.centerX.equalTo(self.view)
         }
         deleteButton.snp.makeConstraints { make in
             make.centerY.equalTo(label)
@@ -222,6 +221,8 @@ class ShoppingViewController:
     }
 }
 
+// MARK: - Table View
+
 extension ShoppingViewController: UITableViewDelegate, UITableViewDataSource, UITableViewDragDelegate, UITableViewDropDelegate, UIDropInteractionDelegate
 {
     func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
@@ -274,7 +275,7 @@ extension ShoppingViewController: UITableViewDelegate, UITableViewDataSource, UI
         }
     
         
-        action.backgroundColor = UIColor.refridgeColor(color: .redDelete)
+        action.backgroundColor = UIColor.refridgeColor(color: .red)
         action.image = UIImage(named: "swipeToDelete")
         
         
@@ -320,7 +321,47 @@ extension ShoppingViewController: UITableViewDelegate, UITableViewDataSource, UI
 
 }
 
+extension ShoppingViewController: ShoppingTableViewCellDelegate {
+    
+    func saveToJsonFile() {
+        let file = "shopping.json"
+        
+        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            
+            let fileURL = dir.appendingPathComponent(file)
+            
+            do {
+                let jsonEncoder = JSONEncoder()
+                jsonEncoder.outputFormatting = .prettyPrinted
+                let jsonData = try! jsonEncoder.encode(shoppingList)
+                
+                try jsonData.write(to: fileURL)
+            }
+            catch { print("not save") }
+        }
+    }
+    
+    func pressCheckButton(_ tag: Int) {
+        shoppingList[tag].isSelected = !shoppingList[tag].isSelected
+        saveToJsonFile()
+    }
+    func changeMemo(at tag: Int,to string: String) {
+        shoppingList[tag].memo = string
+        print(shoppingList[tag])
+        
+        saveToJsonFile()
+    }
+    func deleteRow(at tag: Int) {
+        let indexPath = IndexPath.init(row: tag, section: 0)
+        shoppingList.remove(at: indexPath.row)
+        tableView.reloadData() //textfield tag랑 array index 안맞는 문제 해결!!
+        
+        saveToJsonFile()
+    }
+}
 
+
+// MARK: - Text Field Delegate
 
 extension ShoppingViewController: UITextFieldDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -364,44 +405,3 @@ extension ShoppingViewController: UITextFieldDelegate {
         })
     }
 }
-
-extension ShoppingViewController: ShoppingTableViewCellDelegate {
-    
-    func saveToJsonFile() {
-        let file = "shopping.json"
-        
-        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-            
-            let fileURL = dir.appendingPathComponent(file)
-            
-            do {
-                let jsonEncoder = JSONEncoder()
-                jsonEncoder.outputFormatting = .prettyPrinted
-                let jsonData = try! jsonEncoder.encode(shoppingList)
-                
-                try jsonData.write(to: fileURL)
-            }
-            catch { print("not save") }
-        }
-    }
-    
-    func pressCheckButton(_ tag: Int) {
-        shoppingList[tag].isSelected = !shoppingList[tag].isSelected
-        saveToJsonFile()
-    }
-    func changeMemo(at tag: Int,to string: String) {
-        shoppingList[tag].memo = string
-        print(shoppingList[tag])
-        
-        saveToJsonFile()
-    }
-    func deleteRow(at tag: Int) {
-        let indexPath = IndexPath.init(row: tag, section: 0)
-        shoppingList.remove(at: indexPath.row)
-        tableView.reloadData() //textfield tag랑 array index 안맞는 문제 해결!!
-        
-        saveToJsonFile()
-    }
-}
-
-

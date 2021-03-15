@@ -21,10 +21,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         //let viewController = ShoppingViewController()
         let viewController = TabBarController()
+        //let viewController = FridgeViewController()
 
-        //let navigationController = UINavigationController(rootViewController: viewController)
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.isNavigationBarHidden = true
         
-        window.rootViewController = viewController
+        window.rootViewController = navigationController
         window.backgroundColor = .white
         
         self.window = window

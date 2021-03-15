@@ -29,6 +29,11 @@
 		AE71CE3D25D6AC180083B343 /* BaseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CE3C25D6AC180083B343 /* BaseCollectionViewCell.swift */; };
 		AE71CE4625D6D9480083B343 /* ShoppingMemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CE4525D6D9480083B343 /* ShoppingMemo.swift */; };
 		AE71CE4B25D6E9690083B343 /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE71CE4A25D6E9690083B343 /* String+Extension.swift */; };
+		AEC3069125F8F009006CFC48 /* FridgeSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC3069025F8F009006CFC48 /* FridgeSearchViewController.swift */; };
+		AEC3069425F8F82E006CFC48 /* FridgeSearchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC3069325F8F82E006CFC48 /* FridgeSearchTableViewCell.swift */; };
+		AEEEBBBC25F5F75400C12B9A /* FridgeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEEBBBB25F5F75400C12B9A /* FridgeTableViewCell.swift */; };
+		AEEEBBBF25F5F8D100C12B9A /* Fridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEEBBBE25F5F8D100C12B9A /* Fridge.swift */; };
+		AEEEBC7525F6726600C12B9A /* Food.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEEBC7425F6726600C12B9A /* Food.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +61,11 @@
 		AE71CE3C25D6AC180083B343 /* BaseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewCell.swift; sourceTree = "<group>"; };
 		AE71CE4525D6D9480083B343 /* ShoppingMemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingMemo.swift; sourceTree = "<group>"; };
 		AE71CE4A25D6E9690083B343 /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
+		AEC3069025F8F009006CFC48 /* FridgeSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeSearchViewController.swift; sourceTree = "<group>"; };
+		AEC3069325F8F82E006CFC48 /* FridgeSearchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeSearchTableViewCell.swift; sourceTree = "<group>"; };
+		AEEEBBBB25F5F75400C12B9A /* FridgeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeTableViewCell.swift; sourceTree = "<group>"; };
+		AEEEBBBE25F5F8D100C12B9A /* Fridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fridge.swift; sourceTree = "<group>"; };
+		AEEEBC7425F6726600C12B9A /* Food.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Food.swift; sourceTree = "<group>"; };
 		C7D22686949F0F7FFDA2F9B2 /* Pods_my_refridge_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_my_refridge_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D45ED25FAC895369BDDBD053 /* Pods-my-refridge-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-my-refridge-ios.debug.xcconfig"; path = "Target Support Files/Pods-my-refridge-ios/Pods-my-refridge-ios.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -84,6 +94,9 @@
 			isa = PBXGroup;
 			children = (
 				AE15EF5B25F0048600EE1D97 /* FridgeViewController.swift */,
+				AEEEBBBB25F5F75400C12B9A /* FridgeTableViewCell.swift */,
+				AEC3069025F8F009006CFC48 /* FridgeSearchViewController.swift */,
+				AEC3069325F8F82E006CFC48 /* FridgeSearchTableViewCell.swift */,
 			);
 			path = Fridge;
 			sourceTree = "<group>";
@@ -195,6 +208,8 @@
 			isa = PBXGroup;
 			children = (
 				AE71CE4525D6D9480083B343 /* ShoppingMemo.swift */,
+				AEEEBBBE25F5F8D100C12B9A /* Fridge.swift */,
+				AEEEBC7425F6726600C12B9A /* Food.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -327,7 +342,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEC3069125F8F009006CFC48 /* FridgeSearchViewController.swift in Sources */,
+				AEEEBBBF25F5F8D100C12B9A /* Fridge.swift in Sources */,
 				AE71CE0925D55EC20083B343 /* UIColor+Extension.swift in Sources */,
+				AEEEBBBC25F5F75400C12B9A /* FridgeTableViewCell.swift in Sources */,
 				AE71CE3225D6AB9E0083B343 /* ShoppingTableViewCell.swift in Sources */,
 				AE71CE4625D6D9480083B343 /* ShoppingMemo.swift in Sources */,
 				AE71CDB425D5423E0083B343 /* AppDelegate.swift in Sources */,
@@ -338,6 +356,8 @@
 				AE71CE0625D55B990083B343 /* TabBarController.swift in Sources */,
 				AE71CE3625D6ABB90083B343 /* BaseView.swift in Sources */,
 				AE71CDF825D54EEB0083B343 /* UIFont+Extension.swift in Sources */,
+				AEC3069425F8F82E006CFC48 /* FridgeSearchTableViewCell.swift in Sources */,
+				AEEEBC7525F6726600C12B9A /* Food.swift in Sources */,
 				AE71CE3A25D6ABF10083B343 /* BaseTableViewCell.swift in Sources */,
 				AE71CDFC25D5578E0083B343 /* ShoppingViewController.swift in Sources */,
 			);

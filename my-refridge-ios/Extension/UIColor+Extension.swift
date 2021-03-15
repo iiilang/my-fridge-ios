@@ -12,13 +12,13 @@ extension UIColor {
     enum Color: String {
         case purple = "#7E67ECFF"
         case blue = "#5B86E5FF"
-        case green = "459F5DFF"
-        case orange = "F5A76BFf"
-        case red = "EB4D3CFF"
+        case green = "#459F5DFF"
+        case orange = "#F5A76BFF"
+        case red = "#EB4D3CFF"
         case gray = "#454C53FF"
         case black = "#26282BFF"
         case lightgray = "#C9CDD2FF"
-        case redDelete = "#EB4D3CFF"
+        case backgray = "#F7F8F9FF"
     }
     
     static func refridgeColor(color: Color) -> UIColor {
