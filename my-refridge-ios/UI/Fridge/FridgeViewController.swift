@@ -10,17 +10,7 @@ import SnapKit
 
 class FridgeViewController: UIViewController {
     
-    var fridges: [Fridge] = [
-        Fridge(icon: "broccoli", name: "냉장고1", type: "냉장/냉동", memo: "주방에 있는 냉장고", isBasic: true),
-        Fridge(icon: "lettuce", name: "냉장고2", type: "실온", memo: "베란다에 있는 김치 냉장고", isBasic: false),
-        Fridge(icon: "oil", name: "냉장", type: "실온", memo: "베란다", isBasic: false),
-        Fridge(icon: "snack", name: "냉장고", type: "냉장/냉동", memo: "아놔.. 이제 뭐라고 써...", isBasic: false),
-        Fridge(icon: "broccoli", name: "냉장고1", type: "냉장/냉동", memo: "주방에 있는 냉장고", isBasic: false),
-        Fridge(icon: "lettuce", name: "냉장고2", type: "실온", memo: "베란다에 있는 김치 냉장고", isBasic: false),
-        Fridge(icon: "oil", name: "냉장", type: "실온", memo: "베란다", isBasic: false),
-        Fridge(icon: "snack", name: "냉장고", type: "냉장/냉동", memo: "아놔.. 이제 뭐라고 써...", isBasic: false)
-    ]
-    // = [Fridge]()
+    var fridges: [Fridge] = [Fridge]()
     
     var cell = FridgeTableViewCell()
     
@@ -64,6 +54,7 @@ class FridgeViewController: UIViewController {
         view.allowsSelection = false
         view.backgroundColor = .white
         view.separatorStyle = .none
+        view.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 10))
         return view
     }()
     
@@ -82,12 +73,12 @@ class FridgeViewController: UIViewController {
         self.view.addSubview(searchButton)
         self.view.addSubview(setButton)
         
+        readFridgeList()
         
         tableView.delegate = self
         tableView.dataSource = self
         self.view.addSubview(tableView)
         self.view.addSubview(plusButton)
-
     }
 
     func bindConstraints() {
@@ -120,11 +111,30 @@ class FridgeViewController: UIViewController {
     }
 
     @objc func pressSetButton() {
-        print("setting")
+        let VC = SettingViewController()
+        
+        navigationController?.pushViewController(VC, animated: true)
     }
     
     @objc func pressPlusButton() {
-        print("plus")
+        let VC = FridgeEditViewController(title: "냉장고 추가", fridge: Fridge(icon: "broccoli", name: "", type: "냉장/냉동", memo: ""), edit: false, tag: -1)
+        VC.fridgeDelegate = self //??
+        
+        navigationController?.pushViewController(VC, animated: true)
+    }
+}
+
+extension FridgeViewController: SendFridgeDelegate {
+    func sendFridge(data: Fridge, edit: Bool, tag: Int) {
+        if edit {
+            self.fridges[tag] = data
+            self.tableView.reloadData()
+            self.saveToJsonFile()
+        } else {
+            self.fridges.append(data)
+            self.saveToJsonFile()
+            self.tableView.reloadData()
+        }
     }
 }
 
@@ -159,7 +169,10 @@ extension FridgeViewController: FridgeTableViewCellDelegate {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         let defaultAction = UIAlertAction(title: "편집", style: .default) { alert in
-            //self.saveToJsonFile()
+            let VC = FridgeEditViewController(title: "냉장고 편집", fridge: self.fridges[tag], edit: true, tag: tag)
+            VC.fridgeDelegate = self
+            self.navigationController?.pushViewController(VC, animated: true)
+            self.saveToJsonFile()
         }
         let deleteAction = UIAlertAction(title: "삭제", style: .default) { alert in
             let indexPath = IndexPath.init(row: tag, section: 0)
@@ -181,6 +194,24 @@ extension FridgeViewController: FridgeTableViewCellDelegate {
         }.first?.isActive = false
     }
     
+    func readFridgeList() {
+        
+        let jsonDecoder = JSONDecoder()
+        
+        let file = "fridge.json"
+        
+        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            let fileURL = dir.appendingPathComponent(file)
+            
+            do {
+                let fridgeData = try Data(contentsOf: fileURL)
+                self.fridges = try jsonDecoder.decode([Fridge].self, from: fridgeData)
+            }
+            catch { print("something went wrong")}
+        }
+        
+    }
+    
     func saveToJsonFile() {
         let file = "fridge.json"
         
@@ -199,3 +230,4 @@ extension FridgeViewController: FridgeTableViewCellDelegate {
         }
     }
 }
+

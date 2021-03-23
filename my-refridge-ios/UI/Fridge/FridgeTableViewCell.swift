@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 protocol FridgeTableViewCellDelegate {
     func pressMoreButton(_ tag: Int)
@@ -23,6 +24,8 @@ class FridgeTableViewCell: BaseTableViewCell {
             
             if fridge?.type == "냉장/냉동" {
                 typeLabel.text = "냉장"
+                typeView.backgroundColor = UIColor.refridgeColor(color: .orange)
+                iceView.isHidden = false
             } else {
                 typeLabel.text = "실온"
                 typeView.backgroundColor = UIColor.refridgeColor(color: .purple)
@@ -102,12 +105,13 @@ class FridgeTableViewCell: BaseTableViewCell {
     let moreButton: UIButton = {
         let btn = UIButton()
         btn.setImage(UIImage(named: "more"), for: .normal)
+        btn.contentEdgeInsets = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
         return btn
     }()
     
     override func setup() {
         
-        
+        self.backgroundColor = .white
         self.addSubview(backView)
         backView.addSubview(iconView)
         iconView.addSubview(icon)
@@ -178,7 +182,8 @@ class FridgeTableViewCell: BaseTableViewCell {
         }
         moreButton.snp.makeConstraints { make in
             make.centerY.equalTo(nameLabel)
-            make.right.equalToSuperview().inset(13.5)
+            
+            make.right.equalToSuperview().inset(13.5 - 12)
         }
     }
     
