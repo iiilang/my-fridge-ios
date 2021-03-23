@@ -15,7 +15,7 @@ class FridgeSearchViewController: UIViewController {
         Food(name: "아나", type: "냉장", registeredDate: Date(), expirationDate: Date(timeIntervalSince1970: 32948102934), memo: "한묶음")
     ]
     
-    var cell = FridgeSearchTableViewCell()
+    var cell = FoodTableViewCell()
     
     private let backButton: UIButton = {
         let btn = UIButton()
@@ -47,10 +47,11 @@ class FridgeSearchViewController: UIViewController {
     
     private let tableView: UITableView = {
         let view = UITableView()
-        view.register(FridgeSearchTableViewCell.self, forCellReuseIdentifier: "FridgeSearchTableViewCell")
+        view.register(FoodTableViewCell.self, forCellReuseIdentifier: "FoodTableViewCell")
         
         view.separatorInset = UIEdgeInsets(top: 0, left: 17, bottom: 0, right: 17)
         view.tableFooterView = UIView()
+        view.backgroundColor = .white
         
         return view
     }()
@@ -115,7 +116,7 @@ extension FridgeSearchViewController: UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        cell = tableView.dequeueReusableCell(withIdentifier: "FridgeSearchTableViewCell", for: indexPath) as! FridgeSearchTableViewCell
+        cell = tableView.dequeueReusableCell(withIdentifier: "FoodTableViewCell", for: indexPath) as! FoodTableViewCell
         
         cell.food = foods[indexPath.row]
 
@@ -131,7 +132,6 @@ extension FridgeSearchViewController: UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        
         textField.resignFirstResponder()
         return true
     }

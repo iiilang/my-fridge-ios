@@ -13,6 +13,6 @@ struct Fridge: Codable {
     var name: String
     var type: String
     var memo: String
-    var isBasic: Bool
+    var isBasic: Bool = false
     
 }

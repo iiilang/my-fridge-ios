@@ -19,6 +19,7 @@ extension UIColor {
         case black = "#26282BFF"
         case lightgray = "#C9CDD2FF"
         case backgray = "#F7F8F9FF"
+        case togglegray = "#E8EBEDFF"
     }
     
     static func refridgeColor(color: Color) -> UIColor {

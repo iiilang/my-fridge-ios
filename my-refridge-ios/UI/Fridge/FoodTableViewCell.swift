@@ -7,7 +7,7 @@
 
 import UIKit
 
-class FridgeSearchTableViewCell: BaseTableViewCell {
+class FoodTableViewCell: BaseTableViewCell {
     
     var food: Food? {
         didSet {
