@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol ToggleTableViewCellDelegate {
+    func switchAllowToggle(sender: UISwitch)
+}
+
 class ToggleTableViewCell: BaseTableViewCell {
     
     var title: String? {
@@ -14,6 +18,8 @@ class ToggleTableViewCell: BaseTableViewCell {
             titleLabel.text = title
         }
     }
+    
+    var cellDelegate: ToggleTableViewCellDelegate?
 
     private let titleLabel: UILabel = {
         let lbl = UILabel()
@@ -33,7 +39,6 @@ class ToggleTableViewCell: BaseTableViewCell {
         sch.layer.cornerRadius = sch.frame.height / 2.0
         sch.backgroundColor = UIColor.refridgeColor(color: .togglegray)
         sch.clipsToBounds = true
-        
         
         return sch
     }()
@@ -56,6 +61,6 @@ class ToggleTableViewCell: BaseTableViewCell {
     }
     
     @objc func switchToggle(sender: UISwitch) {
-        
+        //cellDelegate?.switchAllowToggle(sender: sender)
     }
 }

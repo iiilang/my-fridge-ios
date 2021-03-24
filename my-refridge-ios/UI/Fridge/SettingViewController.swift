@@ -41,15 +41,16 @@ class SettingViewController: UIViewController {
         view.register(RadioTableViewCell.self, forCellReuseIdentifier: "RadioTableViewCell")
         view.register(DatePickerTableViewCell.self, forCellReuseIdentifier: "DatePickerTableViewCell")
         
-        view.separatorInset = UIEdgeInsets(top: 0, left: 17, bottom: 0, right: 17)
         view.tableFooterView = UIView()
         view.backgroundColor = .white
         view.allowsSelection = false
         view.separatorStyle = .none
-        
+        view.tag = 0
 
         return view
     }()
+    
+    
     
     private let line = UIImageView(image: UIImage(named: "lineShop"))
     
@@ -241,4 +242,14 @@ extension SettingViewController: UITextFieldDelegate {
     }
 
 }
+
+//extension SettingViewController: ToggleTableViewCellDelegate {
+//    func switchAllowToggle(sender: UISwitch) {
+//        self.allowNoti = sender.isOn
+//        if !sender.isOn { //꺼져있으면
+//            dayNoti = [false, false]
+//            allNoti = false
+//        }
+//    }
+//}
 

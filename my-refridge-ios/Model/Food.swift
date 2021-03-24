@@ -13,8 +13,5 @@ struct Food: Codable {
     var registeredDate: Date
     var expirationDate: Date
     var memo: String
-    /*
-    var createdAt: String
-    var fridgeId: Int
-    var fridgeUserId: Int */
+    //var fridgeId: Int
 }

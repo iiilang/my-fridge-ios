@@ -50,8 +50,9 @@ class FridgeViewController: UIViewController {
     private let tableView: UITableView = {
         let view = UITableView()
         view.register(FridgeTableViewCell.self, forCellReuseIdentifier: "FridgeTableViewCell")
+        
         view.isUserInteractionEnabled = true
-        view.allowsSelection = false
+        
         view.backgroundColor = .white
         view.separatorStyle = .none
         view.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 10))
@@ -146,6 +147,7 @@ extension FridgeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         cell = tableView.dequeueReusableCell(withIdentifier: "FridgeTableViewCell", for: indexPath) as! FridgeTableViewCell
         
+        cell.selectionStyle = .none
         cell.cellDelegate = self
         cell.moreButton.tag = indexPath.row
         
@@ -161,7 +163,12 @@ extension FridgeViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let VC = FoodViewController()
+        VC.fridge = fridges[indexPath.row]
+        navigationController?.pushViewController(VC, animated: true)
+        
+    }
 }
 
 extension FridgeViewController: FridgeTableViewCellDelegate {

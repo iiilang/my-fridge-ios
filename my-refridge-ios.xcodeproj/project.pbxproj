@@ -35,6 +35,7 @@
 		AE9C9E202604F06600BDDCA5 /* DatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9C9E1F2604F06600BDDCA5 /* DatePickerTableViewCell.swift */; };
 		AEB783832609D63300A33025 /* RadioButtonController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB783822609D63300A33025 /* RadioButtonController.swift */; };
 		AEB78387260A0A1400A33025 /* FoodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB78386260A0A1400A33025 /* FoodViewController.swift */; };
+		AEB78392260A411900A33025 /* FoodEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB78391260A411900A33025 /* FoodEditViewController.swift */; };
 		AEC3069125F8F009006CFC48 /* FridgeSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC3069025F8F009006CFC48 /* FridgeSearchViewController.swift */; };
 		AEC3069425F8F82E006CFC48 /* FoodTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC3069325F8F82E006CFC48 /* FoodTableViewCell.swift */; };
 		AED1337525FFBF6C0035C61D /* FridgeEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED1337425FFBF6C0035C61D /* FridgeEditViewController.swift */; };
@@ -74,6 +75,7 @@
 		AE9C9E1F2604F06600BDDCA5 /* DatePickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerTableViewCell.swift; sourceTree = "<group>"; };
 		AEB783822609D63300A33025 /* RadioButtonController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioButtonController.swift; sourceTree = "<group>"; };
 		AEB78386260A0A1400A33025 /* FoodViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodViewController.swift; sourceTree = "<group>"; };
+		AEB78391260A411900A33025 /* FoodEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEditViewController.swift; sourceTree = "<group>"; };
 		AEC3069025F8F009006CFC48 /* FridgeSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeSearchViewController.swift; sourceTree = "<group>"; };
 		AEC3069325F8F82E006CFC48 /* FoodTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTableViewCell.swift; sourceTree = "<group>"; };
 		AED1337425FFBF6C0035C61D /* FridgeEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeEditViewController.swift; sourceTree = "<group>"; };
@@ -239,6 +241,7 @@
 			isa = PBXGroup;
 			children = (
 				AEB78386260A0A1400A33025 /* FoodViewController.swift */,
+				AEB78391260A411900A33025 /* FoodEditViewController.swift */,
 			);
 			path = Food;
 			sourceTree = "<group>";
@@ -379,6 +382,7 @@
 				AEEEBBBC25F5F75400C12B9A /* FridgeTableViewCell.swift in Sources */,
 				AE9C9E202604F06600BDDCA5 /* DatePickerTableViewCell.swift in Sources */,
 				AE71CE3225D6AB9E0083B343 /* ShoppingTableViewCell.swift in Sources */,
+				AEB78392260A411900A33025 /* FoodEditViewController.swift in Sources */,
 				AE71CE4625D6D9480083B343 /* ShoppingMemo.swift in Sources */,
 				AE71CDB425D5423E0083B343 /* AppDelegate.swift in Sources */,
 				AE71CE3D25D6AC180083B343 /* BaseCollectionViewCell.swift in Sources */,

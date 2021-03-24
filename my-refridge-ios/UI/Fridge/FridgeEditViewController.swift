@@ -12,7 +12,6 @@ protocol SendFridgeDelegate {
 }
 
 class FridgeEditViewController: UIViewController {
-
     
     var fridge: Fridge?
  
@@ -500,18 +499,18 @@ class FridgeEditViewController: UIViewController {
         }
         
         typeSelectView.snp.makeConstraints { make in
-            make.centerY.equalTo(typeView.snp.centerY)
+            make.centerY.equalToSuperview()
             make.centerX.equalTo(sCenter)
             make.width.equalTo(86)
             make.height.equalTo(33)
         }
         typeIceButton.snp.makeConstraints { make in
-            make.centerY.equalTo(typeView.snp.centerY)
-            make.centerX.equalTo(typeView.snp.centerX).offset(-46.25)
+            make.centerY.equalToSuperview()
+            make.centerX.equalToSuperview().offset(-46.25)
         }
         typeRoomButton.snp.makeConstraints { make in
-            make.centerY.equalTo(typeView.snp.centerY)
-            make.centerX.equalTo(typeView.snp.centerX).offset(46.25)
+            make.centerY.equalToSuperview()
+            make.centerX.equalToSuperview().offset(46.25)
         }
         
         basicLabel.snp.makeConstraints { make in

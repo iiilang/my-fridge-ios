@@ -15,4 +15,5 @@ struct Fridge: Codable {
     var memo: String
     var isBasic: Bool = false
     
+    var foods = [Food]()
 }
