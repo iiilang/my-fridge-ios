@@ -19,11 +19,13 @@ class ShoppingViewController:
     
     var first: Bool = true
     
+    //MARK: - TODO: NAVIGATION
+    
     private let copyButton: UIButton = {
         let btn = UIButton()
         btn.setImage(UIImage(named: "copy"), for: .normal)
         btn.imageView?.contentMode = .scaleAspectFill
-        btn.addTarget(self, action: #selector(pressCopyButton), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(copyMemo), for: .touchUpInside)
         return btn
     }()
     
@@ -31,6 +33,7 @@ class ShoppingViewController:
         let lbl = UILabel()
         lbl.text = "장보기 메모"
         lbl.font = UIFont.notoSansKR(size: 18, family: .Medium)
+        lbl.textColor = UIColor.refridgeColor(color: .titleBlack)
         return lbl
     }()
     
@@ -43,7 +46,10 @@ class ShoppingViewController:
         return btn
     } ()
     
-    private let line = UIImageView(image: UIImage(named: "lineShop"))
+    private let line = UIImageView(image: UIImage(named: "line"))
+    
+    
+    //MARK: 화면 구성 요소
     
     private let dateLabel: UILabel = {
         let lbl = UILabel()
@@ -52,6 +58,7 @@ class ShoppingViewController:
         dateFormatter.dateFormat = "yyyy.MM.dd"
         lbl.text = dateFormatter.string(from: now as Date)
         lbl.font = UIFont.notoSansKR(size: 18, family: .Medium)
+        lbl.textColor = UIColor.refridgeColor(color: .titleBlack)
         return lbl
     }()
     
@@ -72,7 +79,7 @@ class ShoppingViewController:
         btn.setTitle("+ 항목 추가", for: .normal)
         btn.titleLabel?.font = UIFont.notoSansKR(size: 16, family: .Medium)
         btn.setTitleColor(UIColor.refridgeColor(color: .black), for: .normal)
-        btn.addTarget(self, action: #selector(pressWriteButton), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(writeMemo), for: .touchUpInside)
         return btn
     } ()
 
@@ -80,10 +87,7 @@ class ShoppingViewController:
         super.viewDidLoad()
 
         setup()
-        tableviewSetUp()
-        keyboardSetUp()
         bindConstraints()
-        //self.tableView.reloadData()
     }
     
     func setup() {
@@ -95,45 +99,23 @@ class ShoppingViewController:
         self.view.backgroundColor = .white
         
         readShoppingList()
-    }
-    
-    func readShoppingList() {
-        
-        let jsonDecoder = JSONDecoder()
-        
-        let file = "shopping.json"
-        
-        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-            let fileURL = dir.appendingPathComponent(file)
-            
-            do {
-                let shoppingData = try Data(contentsOf: fileURL)
-                self.shoppingList = try jsonDecoder.decode([ShoppingMemo].self, from: shoppingData)
-                first = false
-            }
-            catch { print("something went wrong")}
-        }
-        
+        tableviewSetUp()
+        keyboardSetUp()
     }
     
     func tableviewSetUp() {
-        
-        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 45))
-        footerView.addSubview(writeButton)
-        
         tableView.delegate = self
         tableView.dataSource = self
-        
         tableView.dragInteractionEnabled = true
         tableView.dragDelegate = self
         tableView.dropDelegate = self
         
-        
+        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 45))
+        footerView.addSubview(writeButton)
         tableView.tableFooterView = footerView
-       
+        
         self.view.addSubview(tableView)
         self.view.addInteraction(UIDropInteraction(delegate: self))
-        
         /*
         let tabBarHeight = TabBarController().tabBarHeight
         let defaultTabBarHeight = TabBarController().tabBar.frame.size.height
@@ -141,8 +123,6 @@ class ShoppingViewController:
             self.tableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom:  tabBarHeight - defaultTabBarHeight, right: 0.0)
             self.tableView.scrollIndicatorInsets = self.tableView.contentInset
         }) */
-        
-        setEditing(true, animated: true)
     }
     
     func keyboardSetUp() {
@@ -183,7 +163,7 @@ class ShoppingViewController:
         }
     }
     
-    @objc func pressCopyButton() {
+    @objc func copyMemo() {
         let pasteBoard = UIPasteboard.general
         var string = ""
         
@@ -199,7 +179,6 @@ class ShoppingViewController:
         let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { action in
             self.shoppingList.removeAll()
             self.tableView.reloadData()
-            
             self.saveToJsonFile()
         }
         alert.addAction(defaultAction)
@@ -207,16 +186,13 @@ class ShoppingViewController:
 
         present(alert, animated: true, completion: nil)
     }
-
     
-    @objc func pressWriteButton() {
+    @objc func writeMemo() {
         self.shoppingList.append(ShoppingMemo(memo: "", isSelected: false))
-        
         tableView.beginUpdates()
         tableView.insertRows(at: [IndexPath.init(row: self.shoppingList.count-1, section: 0)], with: .automatic)
         tableView.endUpdates()
         cell.memoField.becomeFirstResponder()
-        
         saveToJsonFile()
     }
 }
@@ -229,7 +205,6 @@ extension ShoppingViewController: UITableViewDelegate, UITableViewDataSource, UI
         
     }
     
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return shoppingList.count
     }
@@ -238,23 +213,12 @@ extension ShoppingViewController: UITableViewDelegate, UITableViewDataSource, UI
         cell = tableView.dequeueReusableCell(withIdentifier: "ShoppingTableViewCell", for: indexPath) as! ShoppingTableViewCell
         
         cell.cellDelegate = self
-        
         cell.checkBox.tag = indexPath.row
-        
         cell.memoField.delegate = self
         cell.memoField.tag = indexPath.row
+        cell.shoppingMemo = shoppingList[indexPath.row]
         
         cell.contentView.isUserInteractionEnabled = false //셀 안의 버튼을 누를 수 없을때.
-        
-        cell.shoppingMemo = shoppingList[indexPath.row]
-        cell.first = self.first
-        
-        
-        //hamburger button
-        cell.editingAccessoryType = .none
-        let view = UIImageView(image: UIImage(named: "move"))
-        cell.editingAccessoryView = view
-
         return cell
     }
     
@@ -322,6 +286,20 @@ extension ShoppingViewController: UITableViewDelegate, UITableViewDataSource, UI
 }
 
 extension ShoppingViewController: ShoppingTableViewCellDelegate {
+    func readShoppingList() {
+        let jsonDecoder = JSONDecoder()
+        let file = "shopping.json"
+        
+        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            let fileURL = dir.appendingPathComponent(file)
+            do {
+                let shoppingData = try Data(contentsOf: fileURL)
+                self.shoppingList = try jsonDecoder.decode([ShoppingMemo].self, from: shoppingData)
+                first = false
+            }
+            catch { print("something went wrong in shopping.json")}
+        }
+    }
     
     func saveToJsonFile() {
         let file = "shopping.json"
@@ -341,7 +319,7 @@ extension ShoppingViewController: ShoppingTableViewCellDelegate {
         }
     }
     
-    func pressCheckButton(_ tag: Int) {
+    func checkMemo(at tag: Int) {
         shoppingList[tag].isSelected = !shoppingList[tag].isSelected
         saveToJsonFile()
     }

@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 protocol ShoppingTableViewCellDelegate {
-    func pressCheckButton(_ tag: Int)
+    func checkMemo(at tag: Int)
     func changeMemo(at tag: Int, to memo: String)
     func deleteRow(at tag: Int)
 }
@@ -17,21 +17,14 @@ protocol ShoppingTableViewCellDelegate {
 class ShoppingTableViewCell: BaseTableViewCell {
 
     var cellDelegate: ShoppingTableViewCellDelegate?
-    
-    var first: Bool = true
-    
+
     var shoppingMemo: ShoppingMemo? {
         didSet {
             checkBox.isSelected = shoppingMemo?.isSelected ?? false
             
-            var string = shoppingMemo?.memo ?? ""
+            let string = shoppingMemo?.memo ?? ""
             
             if checkBox.isSelected {
-                
-                if !first {
-                    string = memoField.text ?? "⚠warning"
-                }
-                
                 memoField.isUserInteractionEnabled = false
                 
                 memoField.text = nil
@@ -46,9 +39,7 @@ class ShoppingTableViewCell: BaseTableViewCell {
                 memoField.textColor = UIColor.refridgeColor(color: .gray)
             }
         }
-        
     }
-    
     
     let checkBox: UIButton = {
         let btn = UIButton()
@@ -57,31 +48,25 @@ class ShoppingTableViewCell: BaseTableViewCell {
         return btn
     } ()
     
-    
     let memoField: UITextField = {
         let fld = UITextField()
         fld.font = UIFont.notoSansKR(size: 15, family: .Regular)
-        
+        fld.textColor = UIColor.refridgeColor(color: .gray)
         return fld
     }()
     
-    
-    private let moveButton: UIButton = {
+    private let moveButton: UIButton = { //hamburger
         let btn = UIButton()
         btn.setImage(UIImage(named: "move"), for: .normal)
-        
         return btn
     }()
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
     
     override func setup() {
@@ -89,8 +74,7 @@ class ShoppingTableViewCell: BaseTableViewCell {
         self.addSubview(memoField)
         self.addSubview(moveButton)
         
-        
-        checkBox.addTarget(self, action: #selector(pressCheckButton), for: .touchUpInside)
+        checkBox.addTarget(self, action: #selector(checkMemo), for: .touchUpInside)
         memoField.addTarget(self, action: #selector(changeMemo), for: .editingDidEnd)
     }
     
@@ -113,17 +97,16 @@ class ShoppingTableViewCell: BaseTableViewCell {
     }
 
     
-    
     //checkBox를 누르면 체크가 되도록 button에 대한 isSelected를 바꾸고,
     //delegate method로 가서 해당 버튼에 대한 isSelected 를 바꿔서 array에 저장.
-    //이거 배열에 저장을 어케하지...?
-    @objc func pressCheckButton(sender: UIButton) {
+    @objc func checkMemo(sender: UIButton) {
+        shoppingMemo?.memo = memoField.text ?? ""
         sender.isSelected = !sender.isSelected
         shoppingMemo?.isSelected = sender.isSelected
-        cellDelegate?.pressCheckButton(sender.tag)
+        cellDelegate?.checkMemo(at: sender.tag)
     }
     
-    @objc func changeMemo(_ textField: UITextField) {
+    @objc func changeMemo(at textField: UITextField) {
         if textField.text != "" {
             let string = textField.text ?? ""
             shoppingMemo?.memo = string
