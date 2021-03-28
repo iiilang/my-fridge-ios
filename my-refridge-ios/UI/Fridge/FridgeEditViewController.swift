@@ -700,10 +700,17 @@ extension FridgeEditViewController: UITextFieldDelegate {
     @objc func keyboardWillShow(notification: NSNotification) {
         let info = notification.userInfo!
         let keyboardFrame: CGRect = (info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-        let keyboardHeight = keyboardFrame.height
+        var keyboardHeight = keyboardFrame.height
+        
+        let defaultTabBarHeight = TabBarController().tabBar.frame.size.height
+        
+        if #available(iOS 11.0, *) {
+            let bottomInset = view.safeAreaInsets.bottom
+            keyboardHeight -= bottomInset
+        }
         
         UIView.animate(withDuration: 0.1, animations: { () -> Void in
-            self.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight , right: 0)
+            self.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight - defaultTabBarHeight , right: 0)
             self.scrollView.scrollIndicatorInsets = self.scrollView.contentInset
         })
     }

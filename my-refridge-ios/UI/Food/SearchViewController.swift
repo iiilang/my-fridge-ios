@@ -121,6 +121,9 @@ class SearchViewController: UIViewController {
         
         searchField.delegate = self
         
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     func bindConstraints() {
@@ -196,9 +199,7 @@ extension SearchViewController: UITextFieldDelegate {
             let bottomInset = view.safeAreaInsets.bottom
             keyboardHeight -= bottomInset
         }
-        //노치 있는 아이폰에선 safearea height 만큼 더 빼야되는데... 처리를 어떻게 하지?
-        //탭바를 붙여놓은 경우엔 bottom 값이 0이 나옴 이런....
-        
+
         UIView.animate(withDuration: 0.1, animations: { () -> Void in
             self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight - defaultTabBarHeight , right: 0)
             self.tableView.scrollIndicatorInsets = self.tableView.contentInset

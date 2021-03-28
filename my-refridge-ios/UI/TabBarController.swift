@@ -36,7 +36,9 @@ class TabBarController: UITabBarController {
         self.tabBar.unselectedItemTintColor = UIColor.refridgeColor(color: .gray)
         self.tabBar.isTranslucent = false
         
-        let refridgeViewController = FridgeViewController()
+        let refridgeViewController = UINavigationController(rootViewController: FridgeViewController())
+        refridgeViewController.navigationBar.isHidden = true
+            
         refridgeViewController.tabBarItem.image = UIImage(named: "tabFridge")
         refridgeViewController.tabBarItem.imageInsets = UIEdgeInsets(top: 3, left: 0, bottom: -3, right: 0)
         
