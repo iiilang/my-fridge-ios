@@ -26,18 +26,17 @@ class FoodTableViewCell: BaseTableViewCell {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
             let expirationText = dateFormatter.string(from: (food?.expirationDate ?? Date()) as Date)
-            dateFormatter.dateFormat = "yyyyMMdd"
-            
-            // MARK: - unwrapping
-            let expirationDateForCompute = Int(dateFormatter.string(from: (food?.expirationDate ?? Date()) as Date))!
-            let today = Int(dateFormatter.string(from: Date() as Date))!
 
             expirationLabel.text = "유통기한: " + expirationText
-            memoLabel.text = food?.memo
-            if today < expirationDateForCompute, expirationDateForCompute - today > 3 {
+
+            let distanceHour = Calendar.current.dateComponents([.hour], from: food!.expirationDate, to: Date()).hour ?? 0
+            if distanceHour > 3 {
                 warnIcon.isHidden = true
                 warnLabel.isHidden = true
             }
+            
+            let memo = (food?.memo == "") ? " " : food?.memo
+            memoLabel.text = memo
         }
     }
     
@@ -93,11 +92,9 @@ class FoodTableViewCell: BaseTableViewCell {
         self.addSubview(memoLabel)
         self.addSubview(warnIcon)
         self.addSubview(warnLabel)
-        
     }
     
     override func bindConstraints() {
-        
         nameLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(12)
             make.left.equalToSuperview().inset(20)

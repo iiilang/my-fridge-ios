@@ -7,15 +7,25 @@
 
 import UIKit
 
-class FridgeSearchViewController: UIViewController {
+class SearchViewController: UIViewController {
     
-    var foods: [Food] = [
-        Food(name: "당근", type: "실온", registeredDate: Date(), expirationDate: Date(timeIntervalSince1970: 413454325), memo: "한묶음"),
-        Food(name: "당근", type: "실온", registeredDate: Date(), expirationDate: Date(), memo: "한묶음"),
-        Food(name: "아나", type: "냉장", registeredDate: Date(), expirationDate: Date(timeIntervalSince1970: 32948102934), memo: "한묶음")
-    ]
+    var fridge: Fridge? {
+        didSet {
+            self.foods = fridge?.foods
+        }
+    }
+    var foods: [Food]?
     
     var cell = FoodTableViewCell()
+    
+    init(fridge: Fridge) {
+        self.fridge = fridge
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     private let backButton: UIButton = {
         let btn = UIButton()
@@ -42,9 +52,16 @@ class FridgeSearchViewController: UIViewController {
     private let searchButton: UIButton = {
         let btn = UIButton()
         btn.setImage(UIImage(named: "search"), for: .normal)
+        btn.addTarget(self, action: #selector(search), for: .touchUpInside)
         return btn
     }()
     
+    @objc func search() {
+        foods = fridge?.foods.filter { food in
+            food.name.contains(searchField.text!)
+        }
+        tableView.reloadData()
+    }
     private let tableView: UITableView = {
         let view = UITableView()
         view.register(FoodTableViewCell.self, forCellReuseIdentifier: "FoodTableViewCell")
@@ -79,6 +96,8 @@ class FridgeSearchViewController: UIViewController {
         tableView.dataSource = self
         self.view.addSubview(tableView)
         
+        searchField.delegate = self
+        
     }
     
     func bindConstraints() {
@@ -110,15 +129,15 @@ class FridgeSearchViewController: UIViewController {
 
 // MARK: -Table View
 
-extension FridgeSearchViewController: UITableViewDelegate, UITableViewDataSource {
+extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return foods.count
+        return foods?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         cell = tableView.dequeueReusableCell(withIdentifier: "FoodTableViewCell", for: indexPath) as! FoodTableViewCell
         
-        cell.food = foods[indexPath.row]
+        cell.food = foods?[indexPath.row]
 
         return cell
     }
@@ -126,17 +145,33 @@ extension FridgeSearchViewController: UITableViewDelegate, UITableViewDataSource
 
 // MARK: - Text Field Delegate
 
-extension FridgeSearchViewController: UITextFieldDelegate {
+extension SearchViewController: UITextFieldDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        foods = fridge?.foods.filter { food in
+            food.name.contains(searchField.text ?? "")
+        }
+        tableView.reloadData()
         self.view.endEditing(true)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
+        
+        foods = fridge?.foods.filter { food in
+            food.name.contains(textField.text!)
+        }
+        tableView.reloadData()
+        
         return true
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        foods = fridge?.foods.filter { food in
+            food.name.contains(textField.text!)
+        }
+        tableView.reloadData()
+        
         return !(textField.text!.count > 20) //20자 제한.
     }
     

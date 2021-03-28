@@ -7,7 +7,17 @@
 
 import UIKit
 
+protocol sendFoodToFridgeDelegate {
+    func sendFoodtoFridge(fridge: Fridge, fridgeTag: Int)
+    func sendChangedFoodtoFridge(food: Food, fridge: Fridge, fridgeTag: Int, changeFridgeTag: Int)
+}
+
 class FoodViewController: UIViewController {
+    // MARK: - variables
+    
+    var fridgeTag: Int = -1
+    
+    var foodfridgeDelegate: sendFoodToFridgeDelegate?
     
     var fridge: Fridge? {
         didSet {
@@ -24,14 +34,19 @@ class FoodViewController: UIViewController {
                 iceView.isHidden = true
                 foodTypeView.isHidden = true
             }
-            
             foods = fridge?.foods
         }
     }
 
-    var foods: [Food]?
+    var foods: [Food]? {
+        didSet {
+            countLabel.text = "전체 \(foods!.count)"
+        }
+    }
     
     var cell = FoodTableViewCell()
+    
+    // MARK: - UI Components
     
     private let backButton: UIButton = {
         let btn = UIButton()
@@ -117,15 +132,6 @@ class FoodViewController: UIViewController {
         return btn
     }()
     
-    private let headerView = UIView()
-    
-    private let countLabel: UILabel = {
-        let lbl = UILabel()
-        lbl.font = UIFont.notoSansKR(size: 12, family: .Regular)
-        lbl.textColor = UIColor.refridgeColor(color: .lightgray)
-        return lbl
-    }()
-    
     private let typeIceButton: UIButton = {
         let btn = UIButton()
         btn.setTitle("냉동", for: .normal)
@@ -136,14 +142,41 @@ class FoodViewController: UIViewController {
         return btn
     }()
     
+    private let headerView = UIView()
+    
+    private let countLabel: UILabel = {
+        let lbl = UILabel()
+        lbl.font = UIFont.notoSansKR(size: 12, family: .Regular)
+        lbl.textColor = UIColor.refridgeColor(color: .lightgray)
+        lbl.text = "전체"
+        return lbl
+    }()
+    
+    private let sortButton: UIButton = {
+        let btn = UIButton()
+        btn.titleLabel?.font = UIFont.notoSansKR(size: 12, family: .Regular)
+        btn.setTitleColor(UIColor.refridgeColor(color: .lightgray), for: .normal)
+        btn.setTitle("유통기한순", for: .normal)
+        btn.addTarget(self, action: #selector(changeSort), for: .touchUpInside)
+        return btn
+    } ()
+    
+    private let line: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.refridgeColor(color: .lightgray)
+        view.clipsToBounds = true
+        view.layer.borderWidth = 0.5
+        view.layer.borderColor = CGColor(red: 201/255, green: 205/255, blue: 210/255, alpha: 1)
+        return view
+    }()
+    
     private let tableView: UITableView = {
         let view = UITableView()
         view.register(FoodTableViewCell.self, forCellReuseIdentifier: "FoodTableViewCell")
-        
         view.separatorInset = UIEdgeInsets(top: 0, left: 17, bottom: 0, right: 17)
         view.tableFooterView = UIView()
         view.backgroundColor = .white
-        
+       
         return view
     }()
     
@@ -155,12 +188,14 @@ class FoodViewController: UIViewController {
         return btn
     }()
     
+    // MARK: - addTarget function
+    
     @objc func back() {
         navigationController?.popViewController(animated: true)
     }
 
     @objc func pressSearchButton() {
-        let VC = FridgeSearchViewController()
+        let VC = SearchViewController(fridge: self.fridge!)
         navigationController?.pushViewController(VC, animated: true)
     }
     
@@ -171,17 +206,29 @@ class FoodViewController: UIViewController {
             typeAllButton.setTitleColor(.white, for: .normal)
             typeColdButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
             typeIceButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
+            foods = fridge?.foods
+            tableView.reloadData()
         } else if sender == typeColdButton {
             centerX = 0
             typeAllButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
             typeColdButton.setTitleColor(.white, for: .normal)
             typeIceButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
+            
+            foods = fridge?.foods.filter { food in
+                food.type == "냉장"
+            }
+            tableView.reloadData()
         } else if sender == typeIceButton {
             centerX = 67
             
             typeAllButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
             typeColdButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
             typeIceButton.setTitleColor(.white, for: .normal)
+            
+            foods = fridge?.foods.filter { food in
+                food.type == "냉동"
+            }
+            tableView.reloadData()
         }
 
         foodTypeSelectView.snp.remakeConstraints { make in
@@ -192,9 +239,30 @@ class FoodViewController: UIViewController {
         }
     }
     
+    
+    
     @objc func pressPlusButton() {
-        let VC = FoodEditViewController()
+        var type: String
+        
+        if self.fridge?.type == "냉장/냉동" {
+            type = "냉장"
+        } else {
+            type = "실온"
+        }
+        let food = Food(name: "", type: type, registeredDate: Date(), expirationDate: Date(), memo: "")
+        
+        let VC = FoodEditViewController(fridgeTag: fridgeTag, fridge: self.fridge!, food: food, edit: false, tag: -1)
+        //VC.fridge = self.fridge
+        VC.foodDelegate = self
         navigationController?.pushViewController(VC, animated: true)
+    }
+    
+    @objc func changeSort() {
+        if sortButton.titleLabel?.text == "유통기한순" {
+            sortButton.setTitle("등록일순", for: .normal)
+        } else if sortButton.titleLabel?.text == "등록일순" {
+            sortButton.setTitle("유통기한순", for: .normal)
+        }
     }
     
     override func viewDidLoad() {
@@ -223,8 +291,12 @@ class FoodViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
+        self.view.addSubview(headerView)
+        headerView.addSubview(countLabel)
+        headerView.addSubview(sortButton)
+        //headerView.addSubview(editButton)
+        headerView.addSubview(line)
         
-        //tableView.tableHeaderView = headerView
         self.view.addSubview(tableView)
         self.view.addSubview(plusButton)
     }
@@ -285,12 +357,30 @@ class FoodViewController: UIViewController {
             make.centerY.equalToSuperview()
             make.centerX.equalToSuperview().offset(67)
         }
-        tableView.snp.makeConstraints { make in
+        headerView.snp.makeConstraints { make in
             if foodTypeView.isHidden {
                 make.top.equalTo(titleLabel.snp.bottom).offset(15)
             } else {
                 make.top.equalTo(foodTypeView.snp.bottom).offset(20)
             }
+            make.left.right.equalToSuperview()
+        }
+        countLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(7.5)
+            make.left.equalToSuperview().inset(20)
+        }
+        sortButton.snp.makeConstraints { make in
+            make.centerY.equalTo(countLabel)
+            make.right.equalToSuperview().offset(-20)
+        }
+        
+        line.snp.makeConstraints { make in
+            make.top.equalTo(countLabel.snp.bottom).offset(7.5)
+            make.left.right.bottom.equalToSuperview()
+            make.height.equalTo(0.5)
+        }
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(headerView.snp.bottom)
             make.left.right.bottom.equalToSuperview()
         }
         plusButton.snp.makeConstraints { make in
@@ -312,7 +402,46 @@ extension FoodViewController: UITableViewDelegate, UITableViewDataSource {
         cell.selectionStyle = .none
         
         cell.food = foods?[indexPath.row]
+        cell.tag = indexPath.row
 
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let VC = FoodEditViewController(fridgeTag: fridgeTag, fridge: self.fridge!, food: (foods?[indexPath.row])!, edit: true, tag: indexPath.row)
+        VC.foodDelegate = self
+        navigationController?.pushViewController(VC, animated: true)
+    }
+}
+
+extension FoodViewController: SendFoodDelegate {
+    func sendFood(food: Food, edit: Bool, tag: Int, fridgeTag: Int, changeFridgeTag: Int) {
+        
+        if fridgeTag == changeFridgeTag { //냉장고 안 바꿈
+            if edit {
+                self.foods?[tag] = food
+                self.fridge?.foods = self.foods ?? [Food]()
+                
+                self.tableView.reloadData()
+            } else {
+                self.foods?.append(food)
+                self.fridge?.foods = self.foods ?? [Food]()
+                
+                self.tableView.reloadData()
+            }
+            
+            foodfridgeDelegate?.sendFoodtoFridge(fridge: self.fridge!, fridgeTag: self.fridgeTag)
+            
+        } else { //냉장고 바꿈
+            if edit { // 수정중이었으면 원래 냉장고에서 삭제 후 새로운 냉장고에 저장.
+                self.foods?.remove(at: tag)
+                self.fridge?.foods = self.foods ?? [Food]()
+                
+                self.tableView.reloadData()
+                
+            }
+            //수정 중이 아니었으면 그냥 바뀐 냉장고에 저장.
+            foodfridgeDelegate?.sendChangedFoodtoFridge(food: food, fridge: fridge!, fridgeTag: fridgeTag, changeFridgeTag: changeFridgeTag)
+        }
     }
 }

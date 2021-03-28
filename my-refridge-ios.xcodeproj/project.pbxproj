@@ -33,10 +33,9 @@
 		AE9C9E1A2604EEE300BDDCA5 /* ToggleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9C9E192604EEE300BDDCA5 /* ToggleTableViewCell.swift */; };
 		AE9C9E1D2604EEEC00BDDCA5 /* RadioTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9C9E1C2604EEEC00BDDCA5 /* RadioTableViewCell.swift */; };
 		AE9C9E202604F06600BDDCA5 /* DatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9C9E1F2604F06600BDDCA5 /* DatePickerTableViewCell.swift */; };
-		AEB783832609D63300A33025 /* RadioButtonController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB783822609D63300A33025 /* RadioButtonController.swift */; };
 		AEB78387260A0A1400A33025 /* FoodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB78386260A0A1400A33025 /* FoodViewController.swift */; };
 		AEB78392260A411900A33025 /* FoodEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEB78391260A411900A33025 /* FoodEditViewController.swift */; };
-		AEC3069125F8F009006CFC48 /* FridgeSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC3069025F8F009006CFC48 /* FridgeSearchViewController.swift */; };
+		AEC3069125F8F009006CFC48 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC3069025F8F009006CFC48 /* SearchViewController.swift */; };
 		AEC3069425F8F82E006CFC48 /* FoodTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC3069325F8F82E006CFC48 /* FoodTableViewCell.swift */; };
 		AED1337525FFBF6C0035C61D /* FridgeEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED1337425FFBF6C0035C61D /* FridgeEditViewController.swift */; };
 		AEEEBBBC25F5F75400C12B9A /* FridgeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEEEBBBB25F5F75400C12B9A /* FridgeTableViewCell.swift */; };
@@ -73,10 +72,9 @@
 		AE9C9E192604EEE300BDDCA5 /* ToggleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleTableViewCell.swift; sourceTree = "<group>"; };
 		AE9C9E1C2604EEEC00BDDCA5 /* RadioTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioTableViewCell.swift; sourceTree = "<group>"; };
 		AE9C9E1F2604F06600BDDCA5 /* DatePickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerTableViewCell.swift; sourceTree = "<group>"; };
-		AEB783822609D63300A33025 /* RadioButtonController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioButtonController.swift; sourceTree = "<group>"; };
 		AEB78386260A0A1400A33025 /* FoodViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodViewController.swift; sourceTree = "<group>"; };
 		AEB78391260A411900A33025 /* FoodEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEditViewController.swift; sourceTree = "<group>"; };
-		AEC3069025F8F009006CFC48 /* FridgeSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeSearchViewController.swift; sourceTree = "<group>"; };
+		AEC3069025F8F009006CFC48 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		AEC3069325F8F82E006CFC48 /* FoodTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTableViewCell.swift; sourceTree = "<group>"; };
 		AED1337425FFBF6C0035C61D /* FridgeEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeEditViewController.swift; sourceTree = "<group>"; };
 		AEEEBBBB25F5F75400C12B9A /* FridgeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FridgeTableViewCell.swift; sourceTree = "<group>"; };
@@ -110,15 +108,8 @@
 			isa = PBXGroup;
 			children = (
 				AE15EF5B25F0048600EE1D97 /* FridgeViewController.swift */,
-				AED1337425FFBF6C0035C61D /* FridgeEditViewController.swift */,
 				AEEEBBBB25F5F75400C12B9A /* FridgeTableViewCell.swift */,
-				AEC3069025F8F009006CFC48 /* FridgeSearchViewController.swift */,
-				AEC3069325F8F82E006CFC48 /* FoodTableViewCell.swift */,
-				AE9C9E162604ED7C00BDDCA5 /* SettingViewController.swift */,
-				AE9C9E192604EEE300BDDCA5 /* ToggleTableViewCell.swift */,
-				AE9C9E1C2604EEEC00BDDCA5 /* RadioTableViewCell.swift */,
-				AE9C9E1F2604F06600BDDCA5 /* DatePickerTableViewCell.swift */,
-				AEB783822609D63300A33025 /* RadioButtonController.swift */,
+				AED1337425FFBF6C0035C61D /* FridgeEditViewController.swift */,
 			);
 			path = Fridge;
 			sourceTree = "<group>";
@@ -167,11 +158,12 @@
 		AE71CDCB25D543460083B343 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				AE71CDBE25D542400083B343 /* LaunchScreen.storyboard */,
+				AE71CE0525D55B990083B343 /* TabBarController.swift */,
 				AEB78389260A0A1A00A33025 /* Food */,
 				AE15EF4C25EFFC7900EE1D97 /* Fridge */,
 				AE71CDFF25D557B20083B343 /* Shpping Memo */,
-				AE71CDBE25D542400083B343 /* LaunchScreen.storyboard */,
-				AE71CE0525D55B990083B343 /* TabBarController.swift */,
+				AE960B97260B8B390037405D /* Setting */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -211,8 +203,8 @@
 		AE71CDFF25D557B20083B343 /* Shpping Memo */ = {
 			isa = PBXGroup;
 			children = (
-				AE71CDFB25D5578E0083B343 /* ShoppingViewController.swift */,
 				AE71CE3125D6AB9E0083B343 /* ShoppingTableViewCell.swift */,
+				AE71CDFB25D5578E0083B343 /* ShoppingViewController.swift */,
 			);
 			path = "Shpping Memo";
 			sourceTree = "<group>";
@@ -237,11 +229,24 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		AE960B97260B8B390037405D /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				AE9C9E162604ED7C00BDDCA5 /* SettingViewController.swift */,
+				AE9C9E192604EEE300BDDCA5 /* ToggleTableViewCell.swift */,
+				AE9C9E1C2604EEEC00BDDCA5 /* RadioTableViewCell.swift */,
+				AE9C9E1F2604F06600BDDCA5 /* DatePickerTableViewCell.swift */,
+			);
+			path = Setting;
+			sourceTree = "<group>";
+		};
 		AEB78389260A0A1A00A33025 /* Food */ = {
 			isa = PBXGroup;
 			children = (
+				AEC3069025F8F009006CFC48 /* SearchViewController.swift */,
 				AEB78386260A0A1400A33025 /* FoodViewController.swift */,
 				AEB78391260A411900A33025 /* FoodEditViewController.swift */,
+				AEC3069325F8F82E006CFC48 /* FoodTableViewCell.swift */,
 			);
 			path = Food;
 			sourceTree = "<group>";
@@ -374,7 +379,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AEC3069125F8F009006CFC48 /* FridgeSearchViewController.swift in Sources */,
+				AEC3069125F8F009006CFC48 /* SearchViewController.swift in Sources */,
 				AE9C9E1A2604EEE300BDDCA5 /* ToggleTableViewCell.swift in Sources */,
 				AEEEBBBF25F5F8D100C12B9A /* Fridge.swift in Sources */,
 				AED1337525FFBF6C0035C61D /* FridgeEditViewController.swift in Sources */,
@@ -396,7 +401,6 @@
 				AE9C9E172604ED7C00BDDCA5 /* SettingViewController.swift in Sources */,
 				AEC3069425F8F82E006CFC48 /* FoodTableViewCell.swift in Sources */,
 				AEEEBC7525F6726600C12B9A /* Food.swift in Sources */,
-				AEB783832609D63300A33025 /* RadioButtonController.swift in Sources */,
 				AE9C9E1D2604EEEC00BDDCA5 /* RadioTableViewCell.swift in Sources */,
 				AE71CE3A25D6ABF10083B343 /* BaseTableViewCell.swift in Sources */,
 				AE71CDFC25D5578E0083B343 /* ShoppingViewController.swift in Sources */,

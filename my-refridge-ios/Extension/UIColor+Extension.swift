@@ -20,7 +20,7 @@ extension UIColor {
         case black = "#26282BFF" //38 40 43
         case gray = "#454C53FF" // 69 76 83
         case lightgray = "#C9CDD2FF" // 201 205 210
-        case backgray = "#F7F8F9FF"
+        case backgray = "#F7F8F9FF" //247 248 249
         case togglegray = "#E8EBEDFF"
     }
     

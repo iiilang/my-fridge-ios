@@ -58,8 +58,8 @@ class RadioTableViewCell: BaseTableViewCell {
         if isSelected {
             deselectOtherButton()
         }
-        let tableView = self.superview as! UITableView
-        let tappedCellIndexPath = tableView.indexPath(for: self)!
+        //let tableView = self.superview as! UITableView
+        //let tappedCellIndexPath = tableView.indexPath(for: self)!
         //cellDelegate?.didToggleRadioButton(tappedCellIndexPath)
     }
     

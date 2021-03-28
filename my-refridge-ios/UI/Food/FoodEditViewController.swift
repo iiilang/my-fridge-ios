@@ -7,18 +7,43 @@
 
 import UIKit
 
+protocol SendFoodDelegate {
+    func sendFood(food: Food, edit: Bool, tag: Int, fridgeTag: Int, changeFridgeTag: Int)
+}
+
 class FoodEditViewController: UIViewController {
     
-    //var fridge: Fridge
+    // MARK: - variables
+    var fridges: [Fridge]?
+    var fridgeTag: Int
+    var changeFridgeTag: Int //바뀔 냉장고.
     
-    var food: Food? {
-        didSet {
-            // typeView, typeIceButton -> 실온일때 처리
-        }
-    }
+    var fridge: Fridge?
+    var food: Food?
     
     var edit: Bool = false
+    var tag: Int = -1
+    var foodDelegate: SendFoodDelegate?
     
+    
+    // MARK: - Initialization
+    
+    init(fridgeTag: Int, fridge: Fridge, food: Food, edit: Bool, tag: Int) {
+        self.fridgeTag = fridgeTag
+        self.changeFridgeTag = fridgeTag
+        self.fridge = fridge
+        titleLabel.text = edit ? "식품 편집" : "식품 추가"
+        self.edit = edit
+        self.food = food
+        self.tag = tag
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - UI Components
     private let backButton: UIButton = {
         let btn = UIButton()
         btn.setImage(UIImage(named: "back"), for: .normal)
@@ -43,7 +68,7 @@ class FoodEditViewController: UIViewController {
         return btn
     } ()
     
-    private let line = UIImageView(image: UIImage(named: "lineShop"))
+    private let line = UIImageView(image: UIImage(named: "line"))
     
     private let scrollView = UIScrollView()
     
@@ -130,14 +155,30 @@ class FoodEditViewController: UIViewController {
     }()
     
     private let expirationRequiredIcon = UIImageView(image: UIImage(named: "required"))
+
     
-    private let expirationDate: UIDatePicker = {
+    private let expirationDate: UITextField = {
+        let fld = UITextField()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        fld.text = dateFormatter.string(from: Date() as Date)
+        fld.tintColor = .clear
+        fld.font = UIFont.notoSansKR(size: 15, family: .Regular)
+        fld.textColor = UIColor.refridgeColor(color: .black)
+            
+        return fld
+    } ()
+
+    private let expirationDatePicker: UIDatePicker = {
         let pick = UIDatePicker()
-        pick.minuteInterval = 10
         pick.datePickerMode = .date
-        pick.preferredDatePickerStyle = .compact
+        if #available(iOS 14, *) {
+            pick.preferredDatePickerStyle = .wheels
+            
+        }
         pick.backgroundColor = .clear
-        
+        pick.addTarget(self, action: #selector(setExpDate), for: .valueChanged)
+
         return pick
     } ()
     
@@ -151,8 +192,7 @@ class FoodEditViewController: UIViewController {
     
     private let enrollDate: UILabel = {
         let lbl = UILabel()
-        lbl.text = "2020-03-24"
-        lbl.font = UIFont.notoSansKR(size: 16, family: .Medium)
+        lbl.font = UIFont.notoSansKR(size: 15, family: .Regular)
         lbl.textColor = UIColor.refridgeColor(color: .black)
         return lbl
     } ()
@@ -191,29 +231,131 @@ class FoodEditViewController: UIViewController {
     
     private let fridgeRequiredIcon = UIImageView(image: UIImage(named: "required"))
     
-    private let fridgeSelectLabel: UILabel = {
-        let lbl = UILabel()
-        lbl.text = "주방 냉장고"
-        lbl.font = UIFont.notoSansKR(size: 16, family: .Medium)
-        lbl.textColor = UIColor.refridgeColor(color: .black)
-        return lbl
+    private let fridgeSelectField: UITextField = {
+        let fld = UITextField()
+        fld.font = UIFont.notoSansKR(size: 15, family: .Regular)
+        fld.textColor = UIColor.refridgeColor(color: .black)
+        fld.tintColor = .clear
+        return fld
+    } ()
+    
+    private lazy var fridgePicker: UIPickerView = {
+        let pick = UIPickerView()
+        pick.delegate = self
+        pick.dataSource = self
+        pick.backgroundColor = .clear
+
+        return pick
     } ()
 
+    
+    // MARK: - add target functions
+    
     @objc func back() {
         navigationController?.popViewController(animated: true)
     }
     
     @objc func done() {
-//        self.fridge?.name = nameField.text ?? " "
-//        let memo = memoField.text ?? " "
-//        self.fridge?.memo = (memo == "") ? " " : memo
-//
-//
-//        if fridge?.name != "", fridge?.name != " " {
-//            fridgeDelegate?.sendFridge(data: fridge!, edit: self.edit, tag: self.tag)
-//            navigationController?.popViewController(animated: true)
-//        }
+        if let name = nameField.text {
+            self.food?.name = name
+        }
+        
+        let memo = memoField.text ?? ""
+        self.food?.memo = (memo == "") ? " ": memo
+        
+        self.food?.memo = memoField.text ?? ""
+        
+        let distanceHour = Calendar.current.dateComponents([.hour], from: food!.registeredDate, to: food!.expirationDate).hour ?? 0
+
+        if food?.name == "" {
+            nameField.resignFirstResponder()
+            memoField.resignFirstResponder()
+            showToast(message: "이름을 넣어주세요.")
+        } else if distanceHour < 0 {
+            nameField.resignFirstResponder()
+            memoField.resignFirstResponder()
+            showToast(message: "유통기한을 다시 설정해주세요.")
+        }
+        else {
+            foodDelegate?.sendFood(food: food!, edit: self.edit, tag: self.tag, fridgeTag: fridgeTag, changeFridgeTag: changeFridgeTag)
+            navigationController?.popViewController(animated: true)
+        }
     }
+    
+    @objc func pressTypeButton(sender: UIButton) {
+        
+        if fridge?.type == "냉장/냉동" {
+            
+            var centerX = -46.25
+            if sender == typeColdButton {
+                centerX = -46.25
+                food?.type = "냉장"
+                typeColdButton.setTitleColor(.white, for: .normal)
+                typeIceButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
+            } else if sender == typeIceButton {
+                centerX = 46.25
+                food?.type = "냉동"
+                typeColdButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
+                typeIceButton.setTitleColor(.white, for: .normal)
+            }
+            
+            typeSelectView.snp.remakeConstraints { make in
+                make.centerY.equalTo(typeView.snp.centerY)
+                make.centerX.equalTo(typeView.snp.centerX).offset(centerX)
+                make.width.equalTo(86)
+                make.height.equalTo(33)
+            }
+        }
+    }
+    
+    @objc func setExpDate(sender: UIDatePicker) {
+        let dateFormatter: DateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        
+        let selectedDate: String = dateFormatter.string(from: sender.date)
+        expirationDate.text = selectedDate
+        
+        food?.expirationDate = sender.date
+    }
+    
+    func changeFridge(to fridge: Fridge, at row: Int) {
+        //fridges![fridgeTag].foods.remove(at: fridgeTag) //원래 냉장고에서 food 삭제
+        
+        fridges![row].foods.append(food!) // 바뀐 냉장고에 지금 바꾼 food를 넣고.
+    }
+    
+    private func showToast(message : String) {
+        let toastLabel = UILabel()
+        //(frame: CGRect(x: self.view.frame.size.width/2 - 75, y: self.view.frame.size.height-100, width: 150, height: 35))
+        
+        toastLabel.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        toastLabel.textColor = UIColor.white
+        toastLabel.font = UIFont.notoSansKR()
+        toastLabel.textAlignment = .center
+        toastLabel.text = message
+        toastLabel.alpha = 1.0
+        toastLabel.numberOfLines = 0
+        toastLabel.layer.cornerRadius = 15
+        toastLabel.clipsToBounds = true
+        self.view.addSubview(toastLabel)
+        toastLabel.snp.makeConstraints { make in
+            make.left.right.equalToSuperview().inset(30)
+            make.bottom.equalToSuperview().inset(50)
+            
+            make.height.equalTo(30)
+        }
+        UIView.animate(withDuration: 2.0, delay: 0.1, options: .curveEaseOut, animations: {
+            toastLabel.alpha = 0.5
+            
+        },completion: { (isCompleted) in
+            toastLabel.removeFromSuperview()
+        }
+        )
+        
+    }
+    
+    
+    // MARK: - viewDidLoad
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -222,6 +364,8 @@ class FoodEditViewController: UIViewController {
     }
     
     func setup() {
+        self.readFridgeList()
+        
         self.view.backgroundColor = .white
         self.view.addSubview(backButton)
         self.view.addSubview(titleLabel)
@@ -242,9 +386,17 @@ class FoodEditViewController: UIViewController {
         typeView.addSubview(typeColdButton)
         typeView.addSubview(typeIceButton)
         
+        
+        if #available(iOS 14, *) {
+            expirationDatePicker.sizeToFit()
+            
+        }
+        expirationDate.inputView = expirationDatePicker
+        
         contentView.addSubview(expirationLabel)
         contentView.addSubview(expirationRequiredIcon)
         contentView.addSubview(expirationDate)
+        
         
         contentView.addSubview(enrollLabel)
         contentView.addSubview(enrollDate)
@@ -255,7 +407,33 @@ class FoodEditViewController: UIViewController {
         
         contentView.addSubview(fridgeLabel)
         contentView.addSubview(fridgeRequiredIcon)
-        contentView.addSubview(fridgeSelectLabel)
+        contentView.addSubview(fridgeSelectField)
+        
+        nameField.text = food?.name
+        memoField.text = food?.memo
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        enrollDate.text = dateFormatter.string(from: food?.registeredDate ?? Date() as Date)
+        
+        fridgeSelectField.text = fridge?.name
+        
+        nameField.delegate = self
+        memoField.delegate = self
+        expirationDate.delegate = self
+        fridgeSelectField.delegate = self
+        
+        fridgeSelectField.inputView = fridgePicker
+
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        let singleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapScrollView))
+        singleTapGestureRecognizer.numberOfTapsRequired = 1
+        singleTapGestureRecognizer.isEnabled = true
+        singleTapGestureRecognizer.cancelsTouchesInView = false
+        scrollView.addGestureRecognizer(singleTapGestureRecognizer)
     }
     
     func bindConstraints() {
@@ -312,6 +490,7 @@ class FoodEditViewController: UIViewController {
             make.left.equalTo(typeLabel.snp.right).offset(3.5)
         }
         
+        
         typeView.snp.makeConstraints { make in
             make.centerY.equalTo(typeLabel)
             make.right.equalToSuperview().inset(20)
@@ -320,14 +499,16 @@ class FoodEditViewController: UIViewController {
         }
         
         var sCenter = typeColdButton.snp.centerX
+        
+        typeIceButton.isHidden = false
         if food?.type == "냉장" {
-            sCenter = typeIceButton.snp.centerX
+            sCenter = typeColdButton.snp.centerX
             typeColdButton.setTitleColor(.white, for: .normal)
             typeIceButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
         } else if food?.type == "냉동" {
             sCenter = typeIceButton.snp.centerX
-            typeColdButton.setTitleColor(.white, for: .normal)
-            typeIceButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
+            typeColdButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
+            typeIceButton.setTitleColor(.white, for: .normal)
         }
         
         typeSelectView.snp.makeConstraints { make in
@@ -345,6 +526,32 @@ class FoodEditViewController: UIViewController {
             make.centerX.equalToSuperview().offset(46.25)
         }
         
+        if fridge?.type == "실온" {
+            
+            typeView.snp.remakeConstraints { make in
+                make.centerY.equalTo(typeLabel)
+                make.right.equalToSuperview().inset(20)
+                make.width.equalTo(92)
+                make.height.equalTo(38)
+            }
+            
+            sCenter = typeColdButton.snp.centerX
+            typeColdButton.setTitle("실온", for: .normal)
+            typeColdButton.setTitleColor(.white, for: .normal)
+            typeIceButton.isHidden = true
+            food?.type = "실온"
+            
+            typeSelectView.snp.remakeConstraints { make in
+                make.centerY.equalToSuperview()
+                make.centerX.equalTo(sCenter)
+                make.width.equalTo(86)
+                make.height.equalTo(33)
+            }
+            typeColdButton.snp.remakeConstraints { make in
+                make.center.equalToSuperview()
+            }
+        }
+        
         
         expirationLabel.snp.makeConstraints { make in
             make.top.equalTo(typeLabel.snp.bottom).offset(27.5)
@@ -359,18 +566,6 @@ class FoodEditViewController: UIViewController {
             make.right.equalToSuperview().inset(20)
         }
         
-        expirationLabel.snp.makeConstraints { make in
-            make.top.equalTo(typeLabel.snp.bottom).offset(27.5)
-            make.left.equalToSuperview().inset(20)
-        }
-        expirationRequiredIcon.snp.makeConstraints { make in
-            make.centerY.equalTo(expirationLabel)
-            make.left.equalTo(typeLabel.snp.right).offset(3.5)
-        }
-        expirationDate.snp.makeConstraints { make in
-            make.centerY.equalTo(expirationLabel)
-            make.right.equalToSuperview().inset(20)
-        }
         
         enrollLabel.snp.makeConstraints { make in
             make.top.equalTo(expirationLabel.snp.bottom).offset(27.5)
@@ -403,31 +598,119 @@ class FoodEditViewController: UIViewController {
             make.centerY.equalTo(fridgeLabel)
             make.left.equalTo(fridgeLabel.snp.right).offset(3.5)
         }
-        fridgeSelectLabel.snp.makeConstraints { make in
+        fridgeSelectField.snp.makeConstraints { make in
             make.centerY.equalTo(fridgeLabel)
             make.right.bottom.equalToSuperview().inset(20)
         }
     }
+}
+
+// MARK: - Text Field Delegate
+
+extension FoodEditViewController: UITextFieldDelegate {
     
-    @objc func pressTypeButton(sender: UIButton) {
-        var centerX = -46.25
-        if sender == typeColdButton {
-            centerX = -46.25
-            food?.type = "냉장"
-            typeColdButton.setTitleColor(.white, for: .normal)
-            typeIceButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
-        } else if sender == typeIceButton {
-            centerX = 46.25
-            food?.type = "냉동"
-            typeColdButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
-            typeIceButton.setTitleColor(.white, for: .normal)
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let name = nameField.text {
+            self.food?.name = name
+        }
+        if self.food?.name != "" {
+            doneButton.setTitleColor(UIColor.refridgeColor(color: .blue), for: .normal)
         }
         
-        typeSelectView.snp.remakeConstraints { make in
-            make.centerY.equalTo(typeView.snp.centerY)
-            make.centerX.equalTo(typeView.snp.centerX).offset(centerX)
-            make.width.equalTo(86)
-            make.height.equalTo(33)
+        self.food?.memo = memoField.text ?? ""
+        
+        self.view.endEditing(true)
+    }
+    
+    @objc func tapScrollView(sender: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        textField.resignFirstResponder()
+        if textField == self.nameField {
+            if let text = textField.text {
+                if text != "", text != " " {
+                    doneButton.setTitleColor(UIColor.refridgeColor(color: .blue), for: .normal)
+                }
+                self.food?.name = text
+            }
+        } else if textField == self.memoField {
+            if let text = textField.text {
+                self.food?.memo = text
+            }
+        }
+        return true
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField == self.nameField,  textField.text!.count >= 0 {
+            doneButton.setTitleColor(UIColor.refridgeColor(color: .blue), for: .normal)
+        }
+        
+        return !(textField.text!.count > 20) //20자 제한.
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        let info = notification.userInfo!
+        let keyboardFrame: CGRect = (info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        let keyboardHeight = keyboardFrame.height
+        
+        UIView.animate(withDuration: 0.1, animations: { () -> Void in
+            self.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight , right: 0)
+            self.scrollView.scrollIndicatorInsets = self.scrollView.contentInset
+        })
+    }
+    
+    @objc func keyboardWillHide(notification: NSNotification) {
+        UIView.animate(withDuration: 0.1, animations: { () -> Void in
+            self.scrollView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
+            self.scrollView.scrollIndicatorInsets = self.scrollView.contentInset
+        })
+    }
+}
+
+extension FoodEditViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return fridges?.count ?? 0
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return fridges![row].name
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        fridgeSelectField.text = fridges![row].name
+        changeFridgeTag = row
+    }
+    
+    func readFridgeList() {
+        let jsonDecoder = JSONDecoder()
+        let file = "fridge.json"
+        
+        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            let fileURL = dir.appendingPathComponent(file)
+            
+            do {
+                let fridgeData = try Data(contentsOf: fileURL)
+                self.fridges = try jsonDecoder.decode([Fridge].self, from: fridgeData)
+            }
+            catch { print("something went wrong in fridge.json")}
+        }
+    }
+    
+}
+
+extension FoodEditViewController: UIScrollViewDelegate {
+    //가로 방향 스크롤막기
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.x > 0 {
+            scrollView.contentOffset.x = 0
         }
     }
 }

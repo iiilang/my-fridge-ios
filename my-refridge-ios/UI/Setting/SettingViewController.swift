@@ -52,7 +52,7 @@ class SettingViewController: UIViewController {
     
     
     
-    private let line = UIImageView(image: UIImage(named: "lineShop"))
+    private let line = UIImageView(image: UIImage(named: "line"))
     
     
     override func viewDidLoad() {

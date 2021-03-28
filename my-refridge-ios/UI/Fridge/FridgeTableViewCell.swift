@@ -20,7 +20,9 @@ class FridgeTableViewCell: BaseTableViewCell {
         didSet {
             icon.image = UIImage(named: fridge?.icon ?? "")
             nameLabel.text = fridge?.name
-            memoLabel.text = fridge?.memo
+            
+            let memo = (fridge?.memo == "") ? " " : fridge?.memo
+            memoLabel.text = memo
             
             if fridge?.type == "냉장/냉동" {
                 typeLabel.text = "냉장"
@@ -31,7 +33,6 @@ class FridgeTableViewCell: BaseTableViewCell {
                 typeView.backgroundColor = UIColor.refridgeColor(color: .purple)
                 iceView.isHidden = true
             }
-            
             basicMark.isHidden = !(fridge?.isBasic ?? false)
         }
     }
@@ -105,12 +106,16 @@ class FridgeTableViewCell: BaseTableViewCell {
     let moreButton: UIButton = {
         let btn = UIButton()
         btn.setImage(UIImage(named: "more"), for: .normal)
+        btn.contentMode = .scaleAspectFill
         btn.contentEdgeInsets = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
         return btn
     }()
     
+    @objc func pressMoreButton(sender: UIButton) {
+        cellDelegate?.pressMoreButton(sender.tag)
+    }
+    
     override func setup() {
-        
         self.backgroundColor = .white
         self.addSubview(backView)
         backView.addSubview(iconView)
@@ -119,12 +124,10 @@ class FridgeTableViewCell: BaseTableViewCell {
         
         backView.addSubview(typeView)
         typeView.addSubview(typeLabel)
-        
         backView.addSubview(iceView)
         iceView.addSubview(iceLabel)
         
         backView.addSubview(basicMark)
-        
         backView.addSubview(memoLabel)
         backView.addSubview(moreButton)
         
@@ -136,7 +139,6 @@ class FridgeTableViewCell: BaseTableViewCell {
             make.top.bottom.equalToSuperview().inset(7.5)
             make.left.right.equalToSuperview().inset(20)
         }
-        
         iconView.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.left.equalToSuperview().inset(12.5)
@@ -153,18 +155,17 @@ class FridgeTableViewCell: BaseTableViewCell {
         typeView.snp.makeConstraints { make in
             make.centerY.equalTo(nameLabel.snp.centerY)
             make.left.equalTo(nameLabel.snp.right).offset(5)
-            make.height.equalTo(19)
-            make.width.equalTo(41.5)
+            make.height.equalTo(20)
+            make.width.equalTo(42)
         }
         typeLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
-        
         iceView.snp.makeConstraints { make in
             make.centerY.equalTo(nameLabel.snp.centerY)
             make.left.equalTo(typeView.snp.right).offset(5)
-            make.height.equalTo(19)
-            make.width.equalTo(41.5)
+            make.height.equalTo(20)
+            make.width.equalTo(42)
         }
         iceLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
@@ -174,7 +175,6 @@ class FridgeTableViewCell: BaseTableViewCell {
             make.left.equalToSuperview().inset(285)
             make.top.equalToSuperview().offset(-2.5)
         }
-        
         memoLabel.snp.makeConstraints { make in
             make.top.equalTo(nameLabel.snp.bottom).offset(5.5)
             make.left.equalTo(iconView.snp.right).offset(10)
@@ -185,9 +185,5 @@ class FridgeTableViewCell: BaseTableViewCell {
             
             make.right.equalToSuperview().inset(13.5 - 12)
         }
-    }
-    
-    @objc func pressMoreButton(sender: UIButton) {
-        cellDelegate?.pressMoreButton(sender.tag)
     }
 }

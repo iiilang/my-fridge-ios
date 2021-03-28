@@ -54,7 +54,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.SymbolicBreakpoint">
          <BreakpointContent
             uuid = "826EBEB0-A934-4D88-BA62-3747193371DC"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             symbolName = "UITableViewAlertForLayoutOutsideViewHierarchy"

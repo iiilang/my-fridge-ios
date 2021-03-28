@@ -13,13 +13,35 @@ protocol SendFridgeDelegate {
 
 class FridgeEditViewController: UIViewController {
     
+    // MARK: - variables in FridgeEditVC
+    
     var fridge: Fridge?
- 
     var edit: Bool = false
-    
-    var tag: Int = -1
-    
+    var fridgeTag: Int = -1
     var fridgeDelegate: SendFridgeDelegate?
+    
+    // MARK: - Initializaition
+    
+    init(fridge: Fridge, edit: Bool) {
+        self.fridge = fridge
+        titleLabel.text = edit ? "냉장고 편집" : "냉장고 추가"
+        self.edit = edit
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    init(fridge: Fridge, edit: Bool, fridgeTag: Int) {
+        self.fridge = fridge
+        titleLabel.text = edit ? "냉장고 편집" : "냉장고 추가"
+        self.edit = edit
+        self.fridgeTag = fridgeTag
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - UI Components
     
     private let backButton: UIButton = {
         let btn = UIButton()
@@ -31,36 +53,31 @@ class FridgeEditViewController: UIViewController {
     private let titleLabel: UILabel = {
         let lbl = UILabel()
         lbl.font = UIFont.notoSansKR(size: 18, family: .Medium)
-        lbl.text = "냉장고 추가"
-        lbl.textColor = UIColor.refridgeColor(color: .black)
+        lbl.textColor = UIColor.refridgeColor(color: .titleBlack)
         return lbl
     }()
     
     private let doneButton: UIButton = {
         let btn = UIButton()
         btn.setTitle("완료", for: .normal)
+        btn.contentMode = .scaleAspectFill
         btn.setTitleColor(UIColor(hex: "#9EA4AAFF"), for: .normal)
         btn.titleLabel?.font = UIFont.notoSansKR(size: 16, family: .Medium)
         btn.addTarget(self, action: #selector(done), for: .touchUpInside)
         return btn
     } ()
     
-    private let line = UIImageView(image: UIImage(named: "lineShop"))
+    private let line = UIImageView(image: UIImage(named: "line"))
     
     private let scrollView = UIScrollView()
-    
-    private let contentView: UIView = {
-        let view = UIView()
-        
-        return view
-    }()
+    private let contentView = UIView()
     
     private let iconView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
         view.layer.cornerRadius = 55
         view.layer.borderWidth = 0.8
-        view.layer.borderColor =  CGColor(red: 201/255, green: 205/255, blue: 210/255, alpha: 1)
+        view.layer.borderColor = CGColor(red: 201/255, green: 205/255, blue: 210/255, alpha: 1)
         view.clipsToBounds = true
         return view
     }()
@@ -70,13 +87,12 @@ class FridgeEditViewController: UIViewController {
         return view
     }()
     
-    
     private let broccoliView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
         view.layer.cornerRadius = 30
         view.layer.borderWidth = 0.8
-        view.layer.borderColor =  CGColor(red: 201/255, green: 205/255, blue: 210/255, alpha: 1)
+        view.layer.borderColor = CGColor(red: 201/255, green: 205/255, blue: 210/255, alpha: 1)
         view.clipsToBounds = true
         return view
     }()
@@ -84,11 +100,11 @@ class FridgeEditViewController: UIViewController {
     private let broccoliButton: UIButton = {
         let btn = UIButton()
         btn.setImage(UIImage(named: "broccoli"), for: .normal)
-        //btn.setImage(UIImage(named: "broccoli"), for: .highlighted)
-        btn.addTarget(self, action: #selector(pressButton), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(setIcon), for: .touchUpInside)
         btn.contentEdgeInsets = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
         return btn
     }()
+    
     
     private let oilView: UIView = {
         let view = UIView()
@@ -103,8 +119,7 @@ class FridgeEditViewController: UIViewController {
     private let oilButton: UIButton = {
         let btn = UIButton()
         btn.setImage(UIImage(named: "oil"), for: .normal)
-        //btn.setImage(UIImage(named: "oil"), for: .highlighted)
-        btn.addTarget(self, action: #selector(pressButton), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(setIcon), for: .touchUpInside)
         btn.contentEdgeInsets = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
         return btn
     }()
@@ -123,11 +138,11 @@ class FridgeEditViewController: UIViewController {
     private let lettuceButton: UIButton = {
         let btn = UIButton()
         btn.setImage(UIImage(named: "lettuce"), for: .normal)
-        //btn.setImage(UIImage(named: "lettuce"), for: .highlighted)
-        btn.addTarget(self, action: #selector(pressButton), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(setIcon), for: .touchUpInside)
         btn.contentEdgeInsets = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
         return btn
     }()
+    
     
     private let snackView: UIView = {
         let view = UIView()
@@ -142,11 +157,11 @@ class FridgeEditViewController: UIViewController {
     private let snackButton: UIButton = {
         let btn = UIButton()
         btn.setImage(UIImage(named: "snack"), for: .normal)
-        //btn.setImage(UIImage(named: "snack"), for: .highlighted)
-        btn.addTarget(self, action: #selector(pressButton), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(setIcon), for: .touchUpInside)
         btn.contentEdgeInsets = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
         return btn
     }()
+    
     
     private let selectView: UIView = {
         let view = UIView()
@@ -167,12 +182,11 @@ class FridgeEditViewController: UIViewController {
         lbl.textColor = UIColor.refridgeColor(color: .black)
         return lbl
     }()
-    
     private let nameRequiredIcon = UIImageView(image: UIImage(named: "required"))
-    
     private let nameField: UITextField = {
         let field = UITextField()
         field.font = UIFont.notoSansKR(size: 15, family: .Regular)
+        field.textColor = UIColor.refridgeColor(color: .gray)
         return field
     }()
     
@@ -194,14 +208,12 @@ class FridgeEditViewController: UIViewController {
     }()
     
     private let typeRequiredIcon = UIImageView(image: UIImage(named: "required"))
-    
     private let typeView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(red: 247/255, green: 248/255, blue: 249/255, alpha: 1)
+        view.backgroundColor = UIColor.refridgeColor(color: .backgray)
         view.layer.cornerRadius = 19
         return view
     }()
-    
     private let typeSelectView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.refridgeColor(color: .blue)
@@ -215,6 +227,7 @@ class FridgeEditViewController: UIViewController {
         btn.titleLabel?.font = UIFont.notoSansKR(size: 15, family: .Medium)
         btn.backgroundColor = .clear
         btn.addTarget(self, action: #selector(pressTypeButton), for: .touchUpInside)
+        btn.contentEdgeInsets = UIEdgeInsets(top: 5, left: 8, bottom: 5, right: 8)
         return btn
     }()
     
@@ -225,6 +238,7 @@ class FridgeEditViewController: UIViewController {
         btn.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
         btn.backgroundColor = .clear
         btn.addTarget(self, action: #selector(pressTypeButton), for: .touchUpInside)
+        btn.contentEdgeInsets = UIEdgeInsets(top: 5, left: 20, bottom: 5, right: 20)
         return btn
     }()
     
@@ -265,6 +279,7 @@ class FridgeEditViewController: UIViewController {
     private let memoField: UITextField = {
         let field = UITextField()
         field.font = UIFont.notoSansKR(size: 15, family: .Regular)
+        field.textColor = UIColor.refridgeColor(color: .gray)
         field.placeholder = "위치, 설명"
         return field
     }()
@@ -278,21 +293,107 @@ class FridgeEditViewController: UIViewController {
         return view
     }()
     
-    init(title: String, fridge: Fridge, edit: Bool, tag: Int) {
-        titleLabel.text = title
-        self.fridge = fridge
-        self.edit = edit
-        self.tag = tag
-        super.init(nibName: nil, bundle: nil)
+    // MARK: - addTarget function
+    
+    @objc func back() {
+        navigationController?.popViewController(animated: true)
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    @objc func done() {
+        if let name = nameField.text {
+            self.fridge?.name = name
+        }
+        
+        self.fridge?.memo = memoField.text ?? ""
+        
+        
+        if fridge?.name == "" {
+            nameField.resignFirstResponder()
+            memoField.resignFirstResponder()
+            showToast(message: "이름을 넣어주세요.")
+        } else {
+            fridgeDelegate?.sendFridge(data: fridge!, edit: self.edit, tag: self.fridgeTag)
+            navigationController?.popViewController(animated: true)
+        }
     }
+    
+    private func showToast(message : String) {
+        let toastLabel = UILabel()
+        toastLabel.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        toastLabel.textColor = UIColor.white
+        toastLabel.font = UIFont.notoSansKR()
+        toastLabel.textAlignment = .center
+        toastLabel.text = message
+        toastLabel.alpha = 1.0
+        toastLabel.layer.cornerRadius = 10
+        toastLabel.clipsToBounds = true
+        self.view.addSubview(toastLabel)
+        toastLabel.snp.makeConstraints { make in
+            make.left.right.equalToSuperview().inset(30)
+            make.bottom.equalToSuperview().inset(50)
+            make.height.equalTo(30)
+        }
+        UIView.animate(withDuration: 2.0, delay: 0.1, options: .curveEaseOut, animations: {
+            toastLabel.alpha = 0.5
+            
+        },completion: { (isCompleted) in
+            toastLabel.removeFromSuperview()
+        }
+        )
+    }
+
+    
+    @objc func setIcon(sender: UIButton) {
+        selectView.snp.remakeConstraints { make in
+            make.width.height.equalTo(60)
+            make.center.equalTo(sender)
+        }
+        
+        if sender == broccoliButton {
+            icon.image = UIImage(named: "broccoliBig")
+            fridge?.icon = "broccoli"
+        } else if sender == oilButton {
+            icon.image = UIImage(named: "oilBig")
+            fridge?.icon = "oil"
+        } else if sender == lettuceButton {
+            icon.image = UIImage(named: "lettuceBig")
+            fridge?.icon = "lettuce"
+        } else if sender == snackButton {
+            icon.image = UIImage(named: "snackBig")
+            fridge?.icon = "snack"
+        }
+    }
+    
+    @objc func pressTypeButton(sender: UIButton) {
+        var centerX = -46.25
+        if sender == typeIceButton {
+            centerX = -46.25
+            fridge?.type = "냉장/냉동"
+            typeIceButton.setTitleColor(.white, for: .normal)
+            typeRoomButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
+        } else if sender == typeRoomButton {
+            centerX = 46.25
+            fridge?.type = "실온"
+            typeIceButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
+            typeRoomButton.setTitleColor(.white, for: .normal)
+        }
+        
+        typeSelectView.snp.remakeConstraints { make in
+            make.centerY.equalTo(typeView.snp.centerY)
+            make.centerX.equalTo(typeView.snp.centerX).offset(centerX)
+            make.width.equalTo(86)
+            make.height.equalTo(33)
+        }
+    }
+    
+    @objc func switchToggle(sender: UISwitch) {
+        fridge?.isBasic = sender.isOn
+    }
+    
+    // MARK: - viewDidLoad
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setup()
         bindConstraints()
     }
@@ -311,7 +412,6 @@ class FridgeEditViewController: UIViewController {
         scrollView.addSubview(contentView)
         contentView.addSubview(iconView)
         iconView.addSubview(icon)
-        //scrollView.isUserInteractionEnabled = true
         
         
         contentView.addSubview(broccoliView)
@@ -354,12 +454,19 @@ class FridgeEditViewController: UIViewController {
         memoField.text = fridge?.memo
     }
     
-    
     func keyboardSetUp() {
         nameField.delegate = self
         memoField.delegate = self
+        scrollView.delegate = self
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        //scroll view tap gesture for keyboard hide
+        let singleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapScrollView))
+        singleTapGestureRecognizer.numberOfTapsRequired = 1
+        singleTapGestureRecognizer.isEnabled = true
+        singleTapGestureRecognizer.cancelsTouchesInView = false
+        scrollView.addGestureRecognizer(singleTapGestureRecognizer)
     }
     
     func bindConstraints() {
@@ -432,17 +539,18 @@ class FridgeEditViewController: UIViewController {
         }
         
         var someView = broccoliView
+        
         if fridge?.icon == "broccoli" {
             icon.image = UIImage(named: "broccoliBig")
             someView = broccoliView
         } else if fridge?.icon == "oil" {
-            icon.image = UIImage(named: "oil")
+            icon.image = UIImage(named: "oilBig")
             someView = oilView
         } else if fridge?.icon == "lettuce" {
-            icon.image = UIImage(named: "lettuce")
+            icon.image = UIImage(named: "lettuceBig")
             someView = lettuceView
         } else if fridge?.icon == "snack" {
-            icon.image = UIImage(named: "snack")
+            icon.image = UIImage(named: "snackBig")
             someView = snackView
         }
         
@@ -540,96 +648,29 @@ class FridgeEditViewController: UIViewController {
             make.height.equalTo(0.8)
         }
     }
-    
-    @objc func back() {
-        navigationController?.popViewController(animated: true)
-    }
-    
-    @objc func done() {
-        self.fridge?.name = nameField.text ?? " "
-        let memo = memoField.text ?? " "
-        self.fridge?.memo = (memo == "") ? " " : memo
-
-        
-        if fridge?.name != "", fridge?.name != " " {
-            fridgeDelegate?.sendFridge(data: fridge!, edit: self.edit, tag: self.tag)
-            navigationController?.popViewController(animated: true)
-        }
-    }
-    
-    
-    @objc func pressButton(sender: UIButton) {
-        selectView.snp.remakeConstraints { make in
-            make.width.height.equalTo(60)
-            make.center.equalTo(sender)
-            
-        }
-        //selectView.isHidden = sender.isSelected
-        
-        if sender == broccoliButton {
-            icon.image = UIImage(named: "broccoliBig")
-            fridge?.icon = "broccoli"
-        } else if sender == oilButton {
-            icon.image = UIImage(named: "oil")
-            fridge?.icon = "oil"
-        } else if sender == lettuceButton {
-            icon.image = UIImage(named: "lettuce")
-            fridge?.icon = "lettuce"
-        } else if sender == snackButton {
-            icon.image = UIImage(named: "snack")
-            fridge?.icon = "snack"
-        }
-    }
-    
-    @objc func pressTypeButton(sender: UIButton) {
-        var centerX = -46.25
-        if sender == typeIceButton {
-            centerX = -46.25
-            fridge?.type = "냉장/냉동"
-            typeIceButton.setTitleColor(.white, for: .normal)
-            typeRoomButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
-        } else if sender == typeRoomButton {
-            centerX = 46.25
-            fridge?.type = "실온"
-            typeIceButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
-            typeRoomButton.setTitleColor(.white, for: .normal)
-        }
-        
-        typeSelectView.snp.remakeConstraints { make in
-            make.centerY.equalTo(typeView.snp.centerY)
-            make.centerX.equalTo(typeView.snp.centerX).offset(centerX)
-            make.width.equalTo(86)
-            make.height.equalTo(33)
-        }
-    }
-    
-    @objc func switchToggle(sender: UISwitch) {
-        fridge?.isBasic = sender.isOn
-    }
 }
-
-
-
 
 // MARK: - Text Field Delegate
 
 extension FridgeEditViewController: UITextFieldDelegate {
     
-    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-        let text = nameField.text ?? " "
-        self.fridge?.name = text
-        if text != "", text != " " {
+        if let name = nameField.text {
+            self.fridge?.name = name
+        }
+        if self.fridge?.name != "" {
             doneButton.setTitleColor(UIColor.refridgeColor(color: .blue), for: .normal)
         }
         
-        self.fridge?.memo = memoField.text ?? " "
-        
+        self.fridge?.memo = memoField.text ?? ""
         
         self.view.endEditing(true)
     }
     
+    @objc func tapScrollView(sender: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+    }
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         textField.resignFirstResponder()
@@ -649,6 +690,10 @@ extension FridgeEditViewController: UITextFieldDelegate {
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField == self.nameField,  textField.text!.count >= 0 {
+            doneButton.setTitleColor(UIColor.refridgeColor(color: .blue), for: .normal)
+        }
+        
         return !(textField.text!.count > 20) //20자 제한.
     }
     
@@ -671,6 +716,8 @@ extension FridgeEditViewController: UITextFieldDelegate {
     }
 
 }
+
+// MARK: - UIScrollViewDelegate
 
 extension FridgeEditViewController: UIScrollViewDelegate {
     //가로 방향 스크롤막기
