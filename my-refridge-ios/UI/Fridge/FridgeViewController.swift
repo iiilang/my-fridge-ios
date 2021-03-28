@@ -62,8 +62,12 @@ class FridgeViewController: UIViewController {
     // MARK: - addTarget function in FridgeVC
     
     @objc func searchFood() {
-        //let VC = SearchViewController(fridge: self.fr)
-        //navigationController?.pushViewController(VC, animated: true)
+        var foods = [Food]()
+        for index in 0..<fridges.count {
+            foods += fridges[index].foods
+        }
+        let VC = SearchViewController(wholeFoods: foods)
+        navigationController?.pushViewController(VC, animated: true)
     }
 
     @objc func pressSettingButton() {
@@ -287,8 +291,20 @@ extension FridgeViewController: FridgeTableViewCellDelegate {
 
 extension FridgeViewController: sendFoodToFridgeDelegate {
     func sendChangedFoodtoFridge(food: Food, fridge: Fridge, fridgeTag: Int, changeFridgeTag: Int) {
+        
+        var foodCopy: Food = food
+        
         fridges[fridgeTag] = fridge
-        fridges[changeFridgeTag].foods.append(food)
+        
+        if fridges[fridgeTag].type != fridges[changeFridgeTag].type {
+            if fridges[changeFridgeTag].type == "냉장/냉동" {
+                foodCopy.type = "냉장"
+            } else {
+                foodCopy.type = "실온"
+            }
+        }
+        
+        fridges[changeFridgeTag].foods.append(foodCopy)
         self.saveToJsonFile()
     }
     

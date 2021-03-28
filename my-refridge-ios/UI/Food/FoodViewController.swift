@@ -156,10 +156,12 @@ class FoodViewController: UIViewController {
         let btn = UIButton()
         btn.titleLabel?.font = UIFont.notoSansKR(size: 12, family: .Regular)
         btn.setTitleColor(UIColor.refridgeColor(color: .lightgray), for: .normal)
-        btn.setTitle("유통기한순", for: .normal)
+        btn.setTitle("등록일순", for: .normal)
         btn.addTarget(self, action: #selector(changeSort), for: .touchUpInside)
         return btn
     } ()
+    
+    private let sortTriangle = UIImageView(image: UIImage(named: "triangle"))
     
     private let line: UIView = {
         let view = UIView()
@@ -260,8 +262,17 @@ class FoodViewController: UIViewController {
     @objc func changeSort() {
         if sortButton.titleLabel?.text == "유통기한순" {
             sortButton.setTitle("등록일순", for: .normal)
+            self.foods?.sort {
+                $0.registeredDate < $1.registeredDate
+            }
+            tableView.reloadData()
+            
         } else if sortButton.titleLabel?.text == "등록일순" {
             sortButton.setTitle("유통기한순", for: .normal)
+            self.foods?.sort {
+                $0.expirationDate < $1.expirationDate
+            }
+            tableView.reloadData()
         }
     }
     
@@ -294,6 +305,7 @@ class FoodViewController: UIViewController {
         self.view.addSubview(headerView)
         headerView.addSubview(countLabel)
         headerView.addSubview(sortButton)
+        headerView.addSubview(sortTriangle)
         //headerView.addSubview(editButton)
         headerView.addSubview(line)
         
@@ -371,9 +383,12 @@ class FoodViewController: UIViewController {
         }
         sortButton.snp.makeConstraints { make in
             make.centerY.equalTo(countLabel)
+            make.right.equalTo(sortTriangle.snp.left).offset(-5)
+        }
+        sortTriangle.snp.makeConstraints { make in
+            make.centerY.equalTo(countLabel)
             make.right.equalToSuperview().offset(-20)
         }
-        
         line.snp.makeConstraints { make in
             make.top.equalTo(countLabel.snp.bottom).offset(7.5)
             make.left.right.bottom.equalToSuperview()
@@ -411,6 +426,33 @@ extension FoodViewController: UITableViewDelegate, UITableViewDataSource {
         let VC = FoodEditViewController(fridgeTag: fridgeTag, fridge: self.fridge!, food: (foods?[indexPath.row])!, edit: true, tag: indexPath.row)
         VC.foodDelegate = self
         navigationController?.pushViewController(VC, animated: true)
+    }
+    
+    //밀어서 삭제 가능하게
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let action = UIContextualAction(style: .normal, title: nil) { (action, view, completion) in
+            self.foods?.remove(at: indexPath.row)
+            self.fridge?.foods = self.foods ?? [Food]()
+            self.foodfridgeDelegate?.sendFoodtoFridge(fridge: self.fridge!, fridgeTag: self.fridgeTag)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            completion(true)
+        }
+    
+        
+        action.backgroundColor = UIColor.refridgeColor(color: .red)
+        action.image = UIImage(named: "swipeToDelete")
+        
+        
+        let configuration = UISwipeActionsConfiguration(actions: [action])
+        configuration.performsFirstActionWithFullSwipe = false
+        return configuration
+        
     }
 }
 

@@ -191,8 +191,7 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
             } else if indexPath.row == 1 {
                 cell.radioButton.isSelected = !allNoti
             }
-            
-            
+
             //cell.cellDelegate = self
             
             cell.contentView.isUserInteractionEnabled = false
@@ -242,14 +241,3 @@ extension SettingViewController: UITextFieldDelegate {
     }
 
 }
-
-//extension SettingViewController: ToggleTableViewCellDelegate {
-//    func switchAllowToggle(sender: UISwitch) {
-//        self.allowNoti = sender.isOn
-//        if !sender.isOn { //꺼져있으면
-//            dayNoti = [false, false]
-//            allNoti = false
-//        }
-//    }
-//}
-

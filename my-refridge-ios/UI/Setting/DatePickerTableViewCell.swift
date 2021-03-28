@@ -22,12 +22,13 @@ class DatePickerTableViewCell: BaseTableViewCell {
         return lbl
     }()
     
-//    private let pickField: UITextField = {
-//        let field = UITextField()
-//        field.font = UIFont.notoSansKR(size: 15, family: .Regular)
-//        field.text = "오후 6:30"
-//        return field
-//    }()
+    private let pickField: UITextField = {
+        let field = UITextField()
+        field.font = UIFont.notoSansKR(size: 15, family: .Regular)
+        field.tintColor = .clear
+        field.text = "오후 6:30"
+        return field
+    }()
     
     let picker: UIDatePicker = {
         let pick = UIDatePicker()
@@ -36,15 +37,30 @@ class DatePickerTableViewCell: BaseTableViewCell {
         pick.datePickerMode = .time
         pick.preferredDatePickerStyle = .inline
         pick.backgroundColor = .clear
+        pick.locale = Locale(identifier: "ko_KR")
         
-        
-        pick.addTarget(self, action: #selector(dateIsChanged), for: .valueChanged)
         return pick
     }()
     
+    @objc func setAlarmTime(sender: UIDatePicker) {
+        let dateFormatter: DateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.dateFormat = "a hh:mm"
+        
+        let selectedDate: String = dateFormatter.string(from: sender.date)
+        pickField.text = selectedDate
+        
+    }
+    
     override func setup() {
         self.addSubview(titleLabel)
-        self.addSubview(picker)
+        self.addSubview(pickField)
+        if #available(iOS 14, *) {
+            picker.sizeToFit()
+            picker.preferredDatePickerStyle = .wheels
+        }
+        pickField.inputView = picker
+        picker.addTarget(self, action: #selector(setAlarmTime), for: .valueChanged)
     }
     
     override func bindConstraints() {
@@ -52,19 +68,9 @@ class DatePickerTableViewCell: BaseTableViewCell {
             make.top.bottom.equalToSuperview().inset(13)
             make.left.equalToSuperview().inset(20)
         }
-        picker.snp.makeConstraints { make in
+        pickField.snp.makeConstraints { make in
             make.centerY.equalTo(titleLabel.snp.centerY)
             make.right.equalToSuperview().inset(20)
         }
-    }
-    
-    @objc func dateIsChanged(sender: UIDatePicker) {
-        let timeFormatter : DateFormatter = DateFormatter()
-        timeFormatter.dateStyle = .none
-        timeFormatter.timeStyle = .short
-        
-        let selectedDate: String = timeFormatter.string(from: sender.date)
-        print("Selected Value \(selectedDate)")
-        //self.textField.text = selectedDate
     }
 }

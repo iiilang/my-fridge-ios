@@ -178,7 +178,8 @@ class FoodEditViewController: UIViewController {
         }
         pick.backgroundColor = .clear
         pick.addTarget(self, action: #selector(setExpDate), for: .valueChanged)
-
+        pick.locale = Locale(identifier: "ko_KR")
+        
         return pick
     } ()
     

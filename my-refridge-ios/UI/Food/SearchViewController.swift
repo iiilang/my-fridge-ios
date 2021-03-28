@@ -9,6 +9,8 @@ import UIKit
 
 class SearchViewController: UIViewController {
     
+    var wholeFoods: [Food]?
+    
     var fridge: Fridge? {
         didSet {
             self.foods = fridge?.foods
@@ -16,10 +18,20 @@ class SearchViewController: UIViewController {
     }
     var foods: [Food]?
     
+    var isWholeSearch: Bool = false
+    
     var cell = FoodTableViewCell()
+    
+    
+    init(wholeFoods: [Food]) { //whole search
+        self.wholeFoods = wholeFoods
+        isWholeSearch = true
+        super.init(nibName: nil, bundle: nil)
+    }
     
     init(fridge: Fridge) {
         self.fridge = fridge
+        isWholeSearch = false
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -45,7 +57,7 @@ class SearchViewController: UIViewController {
         let field = UITextField()
         field.placeholder = "모든 냉장고 내 식품을 검색할 수 있어요!"
         field.font = UIFont.notoSansKR(size: 15, family: .Regular)
-        
+        field.addTarget(self, action: #selector(realTimeInput), for: .editingChanged)
         return field
     } ()
     
@@ -57,11 +69,22 @@ class SearchViewController: UIViewController {
     }()
     
     @objc func search() {
-        foods = fridge?.foods.filter { food in
-            food.name.contains(searchField.text!)
+        if isWholeSearch {
+            foods = wholeFoods?.filter { food in
+                food.name.contains(searchField.text!)
+            }
+        } else {
+            foods = fridge?.foods.filter { food in
+                food.name.contains(searchField.text!)
+            }
         }
         tableView.reloadData()
     }
+    
+    @objc func realTimeInput(sender: UITextField) {
+        search()
+    }
+    
     private let tableView: UITableView = {
         let view = UITableView()
         view.register(FoodTableViewCell.self, forCellReuseIdentifier: "FoodTableViewCell")
@@ -138,44 +161,30 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         cell = tableView.dequeueReusableCell(withIdentifier: "FoodTableViewCell", for: indexPath) as! FoodTableViewCell
         
         cell.food = foods?[indexPath.row]
+        cell.selectionStyle = .none
 
         return cell
     }
+
 }
 
 // MARK: - Text Field Delegate
 
 extension SearchViewController: UITextFieldDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        foods = fridge?.foods.filter { food in
-            food.name.contains(searchField.text ?? "")
-        }
-        tableView.reloadData()
         self.view.endEditing(true)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        
-        foods = fridge?.foods.filter { food in
-            food.name.contains(textField.text!)
-        }
-        tableView.reloadData()
-        
         return true
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
-        foods = fridge?.foods.filter { food in
-            food.name.contains(textField.text!)
-        }
-        tableView.reloadData()
-        
         return !(textField.text!.count > 20) //20자 제한.
     }
     
-    /*
+    
     @objc func keyboardWillShow(notification: NSNotification) {
         let info = notification.userInfo!
         let keyboardFrame: CGRect = (info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
@@ -201,7 +210,7 @@ extension SearchViewController: UITextFieldDelegate {
             self.tableView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
             self.tableView.scrollIndicatorInsets = self.tableView.contentInset
         })
-    } */
+    }
 }
 
 
