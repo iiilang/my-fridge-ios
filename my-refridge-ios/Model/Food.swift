@@ -8,10 +8,15 @@
 import Foundation
 
 struct Food: Codable {
-    var name: String
-    var type: String
+    var foodName: String
+    var foodType: FoodType
+    var foodMemo: String
+    var expireAt: Date
     var registeredDate: Date
-    var expirationDate: Date
-    var memo: String
-    //var fridgeId: Int
+}
+
+enum FoodType: String, Codable {
+    case REF = "냉장"
+    case FRE = "냉동"
+    case ROOM = "실온"
 }

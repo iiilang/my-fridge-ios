@@ -71,11 +71,11 @@ class SearchViewController: UIViewController {
     @objc func search() {
         if isWholeSearch {
             foods = wholeFoods?.filter { food in
-                food.name.contains(searchField.text!)
+                food.foodName.contains(searchField.text!)
             }
         } else {
             foods = fridge?.foods.filter { food in
-                food.name.contains(searchField.text!)
+                food.foodName.contains(searchField.text!)
             }
         }
         tableView.reloadData()

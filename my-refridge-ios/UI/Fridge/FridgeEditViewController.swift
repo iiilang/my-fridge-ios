@@ -301,13 +301,13 @@ class FridgeEditViewController: UIViewController {
     
     @objc func done() {
         if let name = nameField.text {
-            self.fridge?.name = name
+            self.fridge?.fridgeName = name
         }
         
-        self.fridge?.memo = memoField.text ?? ""
+        self.fridge?.fridgeMemo = memoField.text ?? ""
         
         
-        if fridge?.name == "" {
+        if fridge?.fridgeName == "" {
             nameField.resignFirstResponder()
             memoField.resignFirstResponder()
             showToast(message: "이름을 넣어주세요.")
@@ -351,16 +351,16 @@ class FridgeEditViewController: UIViewController {
         
         if sender == broccoliButton {
             icon.image = UIImage(named: "broccoliBig")
-            fridge?.icon = "broccoli"
+            fridge?.fridgeIcon = "broccoli"
         } else if sender == oilButton {
             icon.image = UIImage(named: "oilBig")
-            fridge?.icon = "oil"
+            fridge?.fridgeIcon = "oil"
         } else if sender == lettuceButton {
             icon.image = UIImage(named: "lettuceBig")
-            fridge?.icon = "lettuce"
+            fridge?.fridgeIcon = "lettuce"
         } else if sender == snackButton {
             icon.image = UIImage(named: "snackBig")
-            fridge?.icon = "snack"
+            fridge?.fridgeIcon = "snack"
         }
     }
     
@@ -368,12 +368,12 @@ class FridgeEditViewController: UIViewController {
         var centerX = -46.25
         if sender == typeIceButton {
             centerX = -46.25
-            fridge?.type = "냉장/냉동"
+            fridge?.fridgeType = .REFRE
             typeIceButton.setTitleColor(.white, for: .normal)
             typeRoomButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
         } else if sender == typeRoomButton {
             centerX = 46.25
-            fridge?.type = "실온"
+            fridge?.fridgeType = .ROOM
             typeIceButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
             typeRoomButton.setTitleColor(.white, for: .normal)
         }
@@ -387,7 +387,7 @@ class FridgeEditViewController: UIViewController {
     }
     
     @objc func switchToggle(sender: UISwitch) {
-        fridge?.isBasic = sender.isOn
+        fridge?.fridgeBasic = sender.isOn
     }
     
     // MARK: - viewDidLoad
@@ -450,8 +450,8 @@ class FridgeEditViewController: UIViewController {
         keyboardSetUp()
         
         //doneButton.isEnabled = false
-        nameField.text = fridge?.name
-        memoField.text = fridge?.memo
+        nameField.text = fridge?.fridgeName
+        memoField.text = fridge?.fridgeMemo
     }
     
     func keyboardSetUp() {
@@ -540,16 +540,16 @@ class FridgeEditViewController: UIViewController {
         
         var someView = broccoliView
         
-        if fridge?.icon == "broccoli" {
+        if fridge?.fridgeIcon == "broccoli" {
             icon.image = UIImage(named: "broccoliBig")
             someView = broccoliView
-        } else if fridge?.icon == "oil" {
+        } else if fridge?.fridgeIcon == "oil" {
             icon.image = UIImage(named: "oilBig")
             someView = oilView
-        } else if fridge?.icon == "lettuce" {
+        } else if fridge?.fridgeIcon == "lettuce" {
             icon.image = UIImage(named: "lettuceBig")
             someView = lettuceView
-        } else if fridge?.icon == "snack" {
+        } else if fridge?.fridgeIcon == "snack" {
             icon.image = UIImage(named: "snackBig")
             someView = snackView
         }
@@ -596,11 +596,11 @@ class FridgeEditViewController: UIViewController {
         }
         
         var sCenter = typeIceButton.snp.centerX
-        if fridge?.type == "냉장/냉동" {
+        if fridge?.fridgeType == .REFRE {
             sCenter = typeIceButton.snp.centerX
             typeIceButton.setTitleColor(.white, for: .normal)
             typeRoomButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
-        } else if fridge?.type == "실온" {
+        } else if fridge?.fridgeType == .ROOM {
             sCenter = typeRoomButton.snp.centerX
             typeRoomButton.setTitleColor(.white, for: .normal)
             typeIceButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
@@ -656,13 +656,13 @@ extension FridgeEditViewController: UITextFieldDelegate {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let name = nameField.text {
-            self.fridge?.name = name
+            self.fridge?.fridgeName = name
         }
-        if self.fridge?.name != "" {
+        if self.fridge?.fridgeName != "" {
             doneButton.setTitleColor(UIColor.refridgeColor(color: .blue), for: .normal)
         }
         
-        self.fridge?.memo = memoField.text ?? ""
+        self.fridge?.fridgeMemo = memoField.text ?? ""
         
         self.view.endEditing(true)
     }
@@ -679,11 +679,11 @@ extension FridgeEditViewController: UITextFieldDelegate {
                 if text != "", text != " " {
                     doneButton.setTitleColor(UIColor.refridgeColor(color: .blue), for: .normal)
                 }
-                self.fridge?.name = text
+                self.fridge?.fridgeName = text
             }
         } else if textField == self.memoField {
             if let text = textField.text {
-                self.fridge?.memo = text
+                self.fridge?.fridgeMemo = text
             }
         }
         return true
@@ -705,7 +705,8 @@ extension FridgeEditViewController: UITextFieldDelegate {
         let defaultTabBarHeight = TabBarController().tabBar.frame.size.height
         
         if #available(iOS 11.0, *) {
-            let bottomInset = view.safeAreaInsets.bottom
+            let window = UIWindow.key
+            let bottomInset = window?.safeAreaInsets.bottom ?? 0
             keyboardHeight -= bottomInset
         }
         
@@ -731,6 +732,16 @@ extension FridgeEditViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.x > 0 {
             scrollView.contentOffset.x = 0
+        }
+    }
+}
+
+extension UIWindow {
+    static var key: UIWindow? {
+        if #available(iOS 13, *) {
+            return UIApplication.shared.windows.first { $0.isKeyWindow }
+        } else {
+            return UIApplication.shared.keyWindow
         }
     }
 }

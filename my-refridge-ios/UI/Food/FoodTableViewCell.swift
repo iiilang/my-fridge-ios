@@ -11,31 +11,31 @@ class FoodTableViewCell: BaseTableViewCell {
     
     var food: Food? {
         didSet {
-            nameLabel.text = food?.name
-            typeLabel.text = food?.type
+            nameLabel.text = food?.foodName
+            typeLabel.text = food?.foodType.rawValue
             
-            if food?.type == "냉장" {
+            if food?.foodType == .REF {
                 typeView.backgroundColor = UIColor.refridgeColor(color: .orange)
-            } else if food?.type == "냉동" {
+            } else if food?.foodType == .FRE {
                 typeView.backgroundColor = UIColor.refridgeColor(color: .green)
-            } else if food?.type == "실온" {
+            } else {
                 typeView.backgroundColor = UIColor.refridgeColor(color: .purple)
             }
             
             
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
-            let expirationText = dateFormatter.string(from: (food?.expirationDate ?? Date()) as Date)
+            let expirationText = dateFormatter.string(from: (food?.expireAt ?? Date()) as Date)
 
             expirationLabel.text = "유통기한: " + expirationText
 
-            let distanceHour = Calendar.current.dateComponents([.hour], from: food!.expirationDate, to: Date()).hour ?? 0
+            let distanceHour = Calendar.current.dateComponents([.hour], from: food!.expireAt, to: Date()).hour ?? 0
             if distanceHour > 3 {
                 warnIcon.isHidden = true
                 warnLabel.isHidden = true
             }
             
-            let memo = (food?.memo == "") ? " " : food?.memo
+            let memo = (food?.foodMemo == "") ? " " : food?.foodMemo
             memoLabel.text = memo
         }
     }

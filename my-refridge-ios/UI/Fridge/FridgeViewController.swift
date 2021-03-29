@@ -76,7 +76,7 @@ class FridgeViewController: UIViewController {
     }
     
     @objc func addFridge() {
-        let fridge = Fridge(icon: "broccoli", name: "", type: "냉장/냉동", memo: "")
+        let fridge = Fridge(fridgeName: "", fridgeIcon: "broccoli", fridgeType: .REFRE, fridgeMemo: "")
         
         let VC = FridgeEditViewController(fridge: fridge, edit: false)
         VC.fridgeDelegate = self
@@ -296,11 +296,11 @@ extension FridgeViewController: sendFoodToFridgeDelegate {
         
         fridges[fridgeTag] = fridge
         
-        if fridges[fridgeTag].type != fridges[changeFridgeTag].type {
-            if fridges[changeFridgeTag].type == "냉장/냉동" {
-                foodCopy.type = "냉장"
+        if fridges[fridgeTag].fridgeType != fridges[changeFridgeTag].fridgeType {
+            if fridges[changeFridgeTag].fridgeType == .REFRE {
+                foodCopy.foodType = .REF
             } else {
-                foodCopy.type = "실온"
+                foodCopy.foodType = .ROOM
             }
         }
         

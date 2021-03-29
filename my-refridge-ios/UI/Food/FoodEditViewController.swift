@@ -258,17 +258,17 @@ class FoodEditViewController: UIViewController {
     
     @objc func done() {
         if let name = nameField.text {
-            self.food?.name = name
+            self.food?.foodName = name
         }
         
         let memo = memoField.text ?? ""
-        self.food?.memo = (memo == "") ? " ": memo
+        self.food?.foodMemo = (memo == "") ? " ": memo
         
-        self.food?.memo = memoField.text ?? ""
+        self.food?.foodMemo = memoField.text ?? ""
         
-        let distanceHour = Calendar.current.dateComponents([.hour], from: food!.registeredDate, to: food!.expirationDate).hour ?? 0
+        let distanceHour = Calendar.current.dateComponents([.hour], from: food!.registeredDate, to: food!.expireAt).hour ?? 0
 
-        if food?.name == "" {
+        if food?.foodName == "" {
             nameField.resignFirstResponder()
             memoField.resignFirstResponder()
             showToast(message: "이름을 넣어주세요.")
@@ -285,17 +285,17 @@ class FoodEditViewController: UIViewController {
     
     @objc func pressTypeButton(sender: UIButton) {
         
-        if fridge?.type == "냉장/냉동" {
+        if fridge?.fridgeType == .REFRE {
             
             var centerX = -46.25
             if sender == typeColdButton {
                 centerX = -46.25
-                food?.type = "냉장"
+                food?.foodType = .REF
                 typeColdButton.setTitleColor(.white, for: .normal)
                 typeIceButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
             } else if sender == typeIceButton {
                 centerX = 46.25
-                food?.type = "냉동"
+                food?.foodType = .FRE
                 typeColdButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
                 typeIceButton.setTitleColor(.white, for: .normal)
             }
@@ -316,7 +316,7 @@ class FoodEditViewController: UIViewController {
         let selectedDate: String = dateFormatter.string(from: sender.date)
         expirationDate.text = selectedDate
         
-        food?.expirationDate = sender.date
+        food?.expireAt = sender.date
     }
     
     func changeFridge(to fridge: Fridge, at row: Int) {
@@ -410,14 +410,14 @@ class FoodEditViewController: UIViewController {
         contentView.addSubview(fridgeRequiredIcon)
         contentView.addSubview(fridgeSelectField)
         
-        nameField.text = food?.name
-        memoField.text = food?.memo
+        nameField.text = food?.foodName
+        memoField.text = food?.foodMemo
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         enrollDate.text = dateFormatter.string(from: food?.registeredDate ?? Date() as Date)
         
-        fridgeSelectField.text = fridge?.name
+        fridgeSelectField.text = fridge?.fridgeName
         
         nameField.delegate = self
         memoField.delegate = self
@@ -502,11 +502,11 @@ class FoodEditViewController: UIViewController {
         var sCenter = typeColdButton.snp.centerX
         
         typeIceButton.isHidden = false
-        if food?.type == "냉장" {
+        if food?.foodType == .REF {
             sCenter = typeColdButton.snp.centerX
             typeColdButton.setTitleColor(.white, for: .normal)
             typeIceButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
-        } else if food?.type == "냉동" {
+        } else if food?.foodType == .FRE {
             sCenter = typeIceButton.snp.centerX
             typeColdButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
             typeIceButton.setTitleColor(.white, for: .normal)
@@ -527,7 +527,7 @@ class FoodEditViewController: UIViewController {
             make.centerX.equalToSuperview().offset(46.25)
         }
         
-        if fridge?.type == "실온" {
+        if fridge?.fridgeType == .ROOM {
             
             typeView.snp.remakeConstraints { make in
                 make.centerY.equalTo(typeLabel)
@@ -540,7 +540,7 @@ class FoodEditViewController: UIViewController {
             typeColdButton.setTitle("실온", for: .normal)
             typeColdButton.setTitleColor(.white, for: .normal)
             typeIceButton.isHidden = true
-            food?.type = "실온"
+            food?.foodType = .ROOM
             
             typeSelectView.snp.remakeConstraints { make in
                 make.centerY.equalToSuperview()
@@ -612,13 +612,13 @@ extension FoodEditViewController: UITextFieldDelegate {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let name = nameField.text {
-            self.food?.name = name
+            self.food?.foodName = name
         }
-        if self.food?.name != "" {
+        if self.food?.foodName != "" {
             doneButton.setTitleColor(UIColor.refridgeColor(color: .blue), for: .normal)
         }
         
-        self.food?.memo = memoField.text ?? ""
+        self.food?.foodMemo = memoField.text ?? ""
         
         self.view.endEditing(true)
     }
@@ -635,11 +635,11 @@ extension FoodEditViewController: UITextFieldDelegate {
                 if text != "", text != " " {
                     doneButton.setTitleColor(UIColor.refridgeColor(color: .blue), for: .normal)
                 }
-                self.food?.name = text
+                self.food?.foodName = text
             }
         } else if textField == self.memoField {
             if let text = textField.text {
-                self.food?.memo = text
+                self.food?.foodMemo = text
             }
         }
         return true
@@ -661,7 +661,8 @@ extension FoodEditViewController: UITextFieldDelegate {
         let defaultTabBarHeight = TabBarController().tabBar.frame.size.height
         
         if #available(iOS 11.0, *) {
-            let bottomInset = view.safeAreaInsets.bottom
+            let window = UIWindow.key
+            let bottomInset = window?.safeAreaInsets.bottom ?? 0
             keyboardHeight -= bottomInset
         }
         
@@ -689,11 +690,11 @@ extension FoodEditViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return fridges![row].name
+        return fridges![row].fridgeName
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        fridgeSelectField.text = fridges![row].name
+        fridgeSelectField.text = fridges![row].fridgeName
         changeFridgeTag = row
     }
     

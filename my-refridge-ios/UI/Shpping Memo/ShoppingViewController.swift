@@ -364,7 +364,8 @@ extension ShoppingViewController: UITextFieldDelegate {
         let defaultTabBarHeight = TabBarController().tabBar.frame.size.height
         
         if #available(iOS 11.0, *) {
-            let bottomInset = view.safeAreaInsets.bottom
+            let window = UIWindow.key
+            let bottomInset = window?.safeAreaInsets.bottom ?? 0
             keyboardHeight -= bottomInset
         }
         //노치 있는 아이폰에선 safearea height 만큼 더 빼야되는데... 처리를 어떻게 하지?

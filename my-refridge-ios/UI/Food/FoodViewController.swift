@@ -21,9 +21,10 @@ class FoodViewController: UIViewController {
     
     var fridge: Fridge? {
         didSet {
-            titleLabel.text = fridge?.name
+            titleLabel.text = fridge?.fridgeName
             
-            if fridge?.type == "냉장/냉동" {
+            
+            if fridge?.fridgeType == .REFRE {
                 typeLabel.text = "냉장"
                 typeView.backgroundColor = UIColor.refridgeColor(color: .orange)
                 iceView.isHidden = false
@@ -217,7 +218,7 @@ class FoodViewController: UIViewController {
             typeIceButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
             
             foods = fridge?.foods.filter { food in
-                food.type == "냉장"
+                food.foodType == .REF
             }
             tableView.reloadData()
         } else if sender == typeIceButton {
@@ -228,7 +229,7 @@ class FoodViewController: UIViewController {
             typeIceButton.setTitleColor(.white, for: .normal)
             
             foods = fridge?.foods.filter { food in
-                food.type == "냉동"
+                food.foodType == .FRE
             }
             tableView.reloadData()
         }
@@ -244,14 +245,14 @@ class FoodViewController: UIViewController {
     
     
     @objc func pressPlusButton() {
-        var type: String
+        var type: FoodType
         
-        if self.fridge?.type == "냉장/냉동" {
-            type = "냉장"
+        if self.fridge?.fridgeType == .REFRE {
+            type = FoodType.REF
         } else {
-            type = "실온"
+            type = FoodType.ROOM
         }
-        let food = Food(name: "", type: type, registeredDate: Date(), expirationDate: Date(), memo: "")
+        let food = Food(foodName: "", foodType: type, foodMemo: "", expireAt: Date(), registeredDate: Date())
         
         let VC = FoodEditViewController(fridgeTag: fridgeTag, fridge: self.fridge!, food: food, edit: false, tag: -1)
         //VC.fridge = self.fridge
@@ -270,7 +271,7 @@ class FoodViewController: UIViewController {
         } else if sortButton.titleLabel?.text == "등록일순" {
             sortButton.setTitle("유통기한순", for: .normal)
             self.foods?.sort {
-                $0.expirationDate < $1.expirationDate
+                $0.expireAt < $1.expireAt
             }
             tableView.reloadData()
         }

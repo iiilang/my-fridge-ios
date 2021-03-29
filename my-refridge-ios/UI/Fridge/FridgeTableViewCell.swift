@@ -18,13 +18,13 @@ class FridgeTableViewCell: BaseTableViewCell {
     
     var fridge: Fridge? {
         didSet {
-            icon.image = UIImage(named: fridge?.icon ?? "")
-            nameLabel.text = fridge?.name
+            icon.image = UIImage(named: fridge?.fridgeIcon ?? "")
+            nameLabel.text = fridge?.fridgeName
             
-            let memo = (fridge?.memo == "") ? " " : fridge?.memo
+            let memo = (fridge?.fridgeMemo == "") ? " " : fridge?.fridgeMemo
             memoLabel.text = memo
             
-            if fridge?.type == "냉장/냉동" {
+            if fridge?.fridgeType == .REFRE {
                 typeLabel.text = "냉장"
                 typeView.backgroundColor = UIColor.refridgeColor(color: .orange)
                 iceView.isHidden = false
@@ -33,7 +33,7 @@ class FridgeTableViewCell: BaseTableViewCell {
                 typeView.backgroundColor = UIColor.refridgeColor(color: .purple)
                 iceView.isHidden = true
             }
-            basicMark.isHidden = !(fridge?.isBasic ?? false)
+            basicMark.isHidden = !(fridge?.fridgeBasic ?? false)
         }
     }
     

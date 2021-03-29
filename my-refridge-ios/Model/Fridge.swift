@@ -9,11 +9,16 @@ import Foundation
 
 struct Fridge: Codable {
     
-    var icon: String
-    var name: String
-    var type: String
-    var memo: String
-    var isBasic: Bool = false
+    var fridgeName: String
+    var fridgeIcon: String
+    var fridgeBasic: Bool = false
+    var fridgeType: FridgeType
+    var fridgeMemo: String
     
     var foods = [Food]()
+}
+
+enum FridgeType: String, Codable {
+    case REFRE = "냉장/냉동"
+    case ROOM = "실온"
 }
