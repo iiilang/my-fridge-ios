@@ -213,7 +213,7 @@ extension DataRequest {
     ///
     /// - Returns:               The `DataResponsePublisher`.
     @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
-    public func publishDecodable<T: Decodable>(type: T.Type = T.self,
+    public func publishDecodable<T: Decodable>(foodType: T.Type = T.self,
                                                queue: DispatchQueue = .main,
                                                preprocessor: DataPreprocessor = DecodableResponseSerializer<T>.defaultDataPreprocessor,
                                                decoder: DataDecoder = JSONDecoder(),
@@ -373,7 +373,7 @@ extension DataStreamRequest {
     ///                   `PassthroughPreprocessor()` by default.
     /// - Returns:        The `DataStreamPublisher`.
     @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
-    public func publishDecodable<T: Decodable>(type: T.Type = T.self,
+    public func publishDecodable<T: Decodable>(foodType: T.Type = T.self,
                                                queue: DispatchQueue = .main,
                                                decoder: DataDecoder = JSONDecoder(),
                                                preprocessor: DataPreprocessor = PassthroughPreprocessor()) -> DataStreamPublisher<T> {
@@ -583,7 +583,7 @@ extension DownloadRequest {
     ///
     /// - Returns:               The `DownloadResponsePublisher`.
     @available(macOS 10.15, iOS 13, watchOS 6, tvOS 13, *)
-    public func publishDecodable<T: Decodable>(type: T.Type = T.self,
+    public func publishDecodable<T: Decodable>(foodType: T.Type = T.self,
                                                queue: DispatchQueue = .main,
                                                preprocessor: DataPreprocessor = DecodableResponseSerializer<T>.defaultDataPreprocessor,
                                                decoder: DataDecoder = JSONDecoder(),

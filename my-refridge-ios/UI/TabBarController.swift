@@ -27,7 +27,7 @@ class TabBarController: UITabBarController {
         tabFrame.origin.y = view.frame.size.height - tabBarHeight
         tabBar.frame = tabFrame
         
-    } */
+    }*/
     
     private func setUpTabBar() {
         
@@ -36,13 +36,15 @@ class TabBarController: UITabBarController {
         self.tabBar.unselectedItemTintColor = UIColor.refridgeColor(color: .gray)
         self.tabBar.isTranslucent = false
         
-        let refridgeViewController = ViewController()
+        let refridgeViewController = UINavigationController(rootViewController: FridgeViewController())
+        refridgeViewController.navigationBar.isHidden = true
+            
         refridgeViewController.tabBarItem.image = UIImage(named: "tabFridge")
-        //refridgeViewController.tabBarItem.imageInsets = UIEdgeInsets(top: 10, left: 0, bottom: -10, right: 0)
+        refridgeViewController.tabBarItem.imageInsets = UIEdgeInsets(top: 3, left: 0, bottom: -3, right: 0)
         
         let shoppingViewController = ShoppingViewController()
         shoppingViewController.tabBarItem.image = UIImage(named: "tabShop")
-        //shoppingViewController.tabBarItem.imageInsets = UIEdgeInsets(top: 13.5, left: 0, bottom: -13.5, right: 0)
+        shoppingViewController.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
         self.viewControllers = [refridgeViewController, shoppingViewController]
     }
