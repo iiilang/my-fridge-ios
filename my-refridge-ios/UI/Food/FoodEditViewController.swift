@@ -289,6 +289,7 @@ class FoodEditViewController: UIViewController {
         }
         else { // 필수 입력 요소 입력 됨.
             if edit {
+                editFood()
             } else {
                 saveFood()
             }
@@ -308,8 +309,8 @@ class FoodEditViewController: UIViewController {
             "foodName": self.food!.foodName,
             "foodType": self.food!.foodType.rawValue,
             "foodMemo": self.food!.foodMemo,
-            "expireAt": self.food!.expireAt
-            //"fridgeId": 10 //self.food!.fridgeId
+            "expireAt": self.food!.expireAt,
+            "fridgeId": 10 //self.food!.fridgeId
         ]
         
 
