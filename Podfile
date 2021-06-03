@@ -12,7 +12,6 @@ target 'my-refridge-ios' do
   pod 'Alamofire', '~> 5.2'
   pod 'ObjectMapper', '~> 3.5'
 
-  pod 'ReachabilitySwift'
 
   # Pods for my-refridge-ios
 
