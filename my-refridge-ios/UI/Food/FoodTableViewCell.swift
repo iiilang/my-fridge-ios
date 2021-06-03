@@ -9,34 +9,50 @@ import UIKit
 
 class FoodTableViewCell: BaseTableViewCell {
     
+    var isSearching: Bool = false //전체 검색 시 메모 대신 냉장고 이름 보여줄건데, 냉장고 정보가 있어야 냉장고 이름을 출력해 줄 수 있음.
+    
     var food: Food? {
         didSet {
             nameLabel.text = food?.foodName
-            typeLabel.text = food?.foodType.rawValue
             
-            if food?.foodType == .REF {
+            switch food?.foodType {
+            case .REFRIGERATED: typeLabel.text = "냉장"
+            case .FROZEN: typeLabel.text = "냉동"
+            case .ROOM: typeLabel.text = "실온"
+            case .none: break
+            }
+            
+            
+            if food?.foodType == .REFRIGERATED {
                 typeView.backgroundColor = UIColor.refridgeColor(color: .orange)
-            } else if food?.foodType == .FRE {
+            } else if food?.foodType == .FROZEN {
                 typeView.backgroundColor = UIColor.refridgeColor(color: .green)
             } else {
                 typeView.backgroundColor = UIColor.refridgeColor(color: .purple)
             }
             
             
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-            let expirationText = dateFormatter.string(from: (food?.expireAt ?? Date()) as Date)
+            expirationLabel.text = food?.expireAt
 
-            expirationLabel.text = "유통기한: " + expirationText
-
-            let distanceHour = Calendar.current.dateComponents([.hour], from: food!.expireAt, to: Date()).hour ?? 0
+            let expDate = food!.expireAt.stringToDate()
+            let distanceHour = Calendar.current.dateComponents([.hour], from: expDate, to: Date()).hour ?? 0
             if distanceHour > 3 {
                 warnIcon.isHidden = true
                 warnLabel.isHidden = true
             }
+            if distanceHour > 0 {
+                warnLabel.text = "유통기한 지남"
+            }
             
-            let memo = (food?.foodMemo == "") ? " " : food?.foodMemo
-            memoLabel.text = memo
+            if isSearching {
+                let fridgeName = "냉장고 이름"
+                memoLabel.text = fridgeName
+            } else {
+                let memo = (food?.foodMemo == "") ? " " : food?.foodMemo
+                memoLabel.text = memo
+            }
+            
+            
         }
     }
     

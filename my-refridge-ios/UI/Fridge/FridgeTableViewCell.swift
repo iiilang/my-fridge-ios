@@ -24,7 +24,7 @@ class FridgeTableViewCell: BaseTableViewCell {
             let memo = (fridge?.fridgeMemo == "") ? " " : fridge?.fridgeMemo
             memoLabel.text = memo
             
-            if fridge?.fridgeType == .REFRE {
+            if fridge?.fridgeType == .REFREGERATOR {
                 typeLabel.text = "냉장"
                 typeView.backgroundColor = UIColor.refridgeColor(color: .orange)
                 iceView.isHidden = false

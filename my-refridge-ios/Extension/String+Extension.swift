@@ -18,4 +18,15 @@ extension String {
         return attributedString
         
     }
+    
+    func stringToDate() -> Date {
+        let dateFomatter = DateFormatter()
+        
+        dateFomatter.dateFormat = "yyyy-MM-dd"
+        dateFomatter.timeZone = NSTimeZone(name: "KST") as TimeZone?
+        
+        let date = dateFomatter.date(from: self)
+        
+        return date!
+    }
 }

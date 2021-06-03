@@ -9,12 +9,22 @@ import UIKit
 
 class TabBarController: UITabBarController {
     
+    //var foods = [Food]()
+    var model = FoodModel()
+    
     let tabBarHeight: CGFloat = 75
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         setUpTabBar()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        model.delegate = self
+        model.ping()
+        //model.getFoods()
     }
     
     /*
@@ -47,5 +57,12 @@ class TabBarController: UITabBarController {
         shoppingViewController.tabBarItem.imageInsets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
         self.viewControllers = [refridgeViewController, shoppingViewController]
+    }
+}
+
+extension TabBarController: FoodModelProtocol {
+    func foodsRetrieved(foods: [Food]) {
+        print("foods retrieved from food model!")
+        //self.foods = foods
     }
 }

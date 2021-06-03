@@ -6,10 +6,14 @@
 //
 
 import UIKit
+import Alamofire
+import Reachability
 
 protocol SendFoodDelegate {
     func sendFood(food: Food, edit: Bool, tag: Int, fridgeTag: Int, changeFridgeTag: Int)
 }
+
+let url = "http://ec2-3-34-204-152.ap-northeast-2.compute.amazonaws.com:8080"
 
 class FoodEditViewController: UIViewController {
     
@@ -32,6 +36,7 @@ class FoodEditViewController: UIViewController {
         self.fridgeTag = fridgeTag
         self.changeFridgeTag = fridgeTag
         self.fridge = fridge
+        
         titleLabel.text = edit ? "식품 편집" : "식품 추가"
         self.edit = edit
         self.food = food
@@ -266,8 +271,13 @@ class FoodEditViewController: UIViewController {
         
         self.food?.foodMemo = memoField.text ?? ""
         
-        let distanceHour = Calendar.current.dateComponents([.hour], from: food!.registeredDate, to: food!.expireAt).hour ?? 0
 
+        let regiDate = food!.createdAt.stringToDate()
+        let expDate = food!.expireAt.stringToDate()
+        
+        let distanceHour = Calendar.current.dateComponents([.hour], from: regiDate, to: expDate).hour ?? 0
+        
+        // 필수 입력 요소 입력 되었는지 검증.
         if food?.foodName == "" {
             nameField.resignFirstResponder()
             memoField.resignFirstResponder()
@@ -277,25 +287,138 @@ class FoodEditViewController: UIViewController {
             memoField.resignFirstResponder()
             showToast(message: "유통기한을 다시 설정해주세요.")
         }
-        else {
-            foodDelegate?.sendFood(food: food!, edit: self.edit, tag: self.tag, fridgeTag: fridgeTag, changeFridgeTag: changeFridgeTag)
-            navigationController?.popViewController(animated: true)
+        else { // 필수 입력 요소 입력 됨.
+            if edit {
+            } else {
+                saveFood()
+            }
+        }
+    }
+    
+    
+    func editFood() {
+        let urlString = url + "/api/v1/foods/\(self.food!.foodId)"
+        
+        let header: HTTPHeaders = [
+            "Content-Type" : "application/json"
+        ]
+        
+
+        let param: Parameters = [
+            "foodName": self.food!.foodName,
+            "foodType": self.food!.foodType.rawValue,
+            "foodMemo": self.food!.foodMemo,
+            "expireAt": self.food!.expireAt
+            //"fridgeId": 10 //self.food!.fridgeId
+        ]
+        
+
+        AF.request(
+            urlString,
+            method: .put,
+            parameters: param,
+            encoding: JSONEncoding.default,
+            headers: header
+        )
+        .responseJSON { [self] response in
+            switch response.result {
+            case .success:
+                guard let result = response.data else { return }
+                print( String(decoding: result, as: UTF8.self) )
+                
+                if response.response?.statusCode == 200 {
+                    
+//                    do {
+                        let decoder = JSONDecoder()
+                        //print(result)
+                    self.food = try! decoder.decode(Food.self, from: result)
+//                    } catch {
+//                        print("food parsing error")
+//                    }
+                    
+                    
+                    self.foodDelegate?.sendFood(food: self.food!, edit: edit, tag: tag, fridgeTag: fridgeTag, changeFridgeTag: changeFridgeTag)
+                    //print(self.food!.foodId)
+                    navigationController?.popViewController(animated: true)
+                } else {
+                    showToast(message: "저장에 실패했습니다.")
+                }
+            case .failure(let error):
+                print(error)
+                showToast(message: "저장에 실패했습니다.")
+                return
+            }
+        }
+    }
+    
+    func saveFood() {
+        let urlString = url + "/api/v1/foods"
+        
+        let header: HTTPHeaders = [
+            "Content-Type" : "application/json"
+        ]
+        
+
+        let param: Parameters = [
+            "foodName": self.food!.foodName,
+            "foodType": self.food!.foodType.rawValue,
+            "foodMemo": self.food!.foodMemo,
+            "expireAt": self.food!.expireAt,
+            "fridgeId": 10 //self.food!.fridgeId
+        ]
+        
+
+        AF.request(
+            urlString,
+            method: .post,
+            parameters: param,
+            encoding: JSONEncoding.default,
+            headers: header
+        )
+        .responseJSON { [self] response in
+            switch response.result {
+            case .success:
+                guard let result = response.data else { return }
+                print( String(decoding: result, as: UTF8.self) )
+                
+                if response.response?.statusCode == 200 {
+                    
+//                    do {
+                        let decoder = JSONDecoder()
+                        //print(result)
+                        food = try! decoder.decode(Food.self, from: result)
+//                    } catch {
+//                        print("food parsing error")
+//                    }
+                    
+                    
+                    self.foodDelegate?.sendFood(food: food!, edit: edit, tag: tag, fridgeTag: fridgeTag, changeFridgeTag: changeFridgeTag)
+                    print(self.food!.foodId)
+                    navigationController?.popViewController(animated: true)
+                } else {
+                    showToast(message: "저장에 실패했습니다.")
+                }
+            case .failure(let error):
+                print(error)
+                showToast(message: "저장에 실패했습니다.")
+                return
+            }
         }
     }
     
     @objc func pressTypeButton(sender: UIButton) {
         
-        if fridge?.fridgeType == .REFRE {
+        if fridge?.fridgeType == .REFREGERATOR {
             
             var centerX = -46.25
             if sender == typeColdButton {
                 centerX = -46.25
-                food?.foodType = .REF
+                food?.foodType = .REFRIGERATED
                 typeColdButton.setTitleColor(.white, for: .normal)
                 typeIceButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
             } else if sender == typeIceButton {
                 centerX = 46.25
-                food?.foodType = .FRE
+                food?.foodType = .FROZEN
                 typeColdButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
                 typeIceButton.setTitleColor(.white, for: .normal)
             }
@@ -316,7 +439,7 @@ class FoodEditViewController: UIViewController {
         let selectedDate: String = dateFormatter.string(from: sender.date)
         expirationDate.text = selectedDate
         
-        food?.expireAt = sender.date
+        food?.expireAt = sender.date.dateToString()
     }
     
     func changeFridge(to fridge: Fridge, at row: Int) {
@@ -413,9 +536,7 @@ class FoodEditViewController: UIViewController {
         nameField.text = food?.foodName
         memoField.text = food?.foodMemo
         
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        enrollDate.text = dateFormatter.string(from: food?.registeredDate ?? Date() as Date)
+        enrollDate.text = food?.createdAt
         
         fridgeSelectField.text = fridge?.fridgeName
         
@@ -502,11 +623,11 @@ class FoodEditViewController: UIViewController {
         var sCenter = typeColdButton.snp.centerX
         
         typeIceButton.isHidden = false
-        if food?.foodType == .REF {
+        if food?.foodType == .REFRIGERATED {
             sCenter = typeColdButton.snp.centerX
             typeColdButton.setTitleColor(.white, for: .normal)
             typeIceButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
-        } else if food?.foodType == .FRE {
+        } else if food?.foodType == .FROZEN {
             sCenter = typeIceButton.snp.centerX
             typeColdButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
             typeIceButton.setTitleColor(.white, for: .normal)
@@ -690,7 +811,8 @@ extension FoodEditViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return fridges![row].fridgeName
+        let type = (fridges![row].fridgeType == .REFREGERATOR) ? "(냉장/냉동)" : "(실온)"
+        return "\(fridges![row].fridgeName) \(type)"
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
@@ -712,7 +834,6 @@ extension FoodEditViewController: UIPickerViewDelegate, UIPickerViewDataSource {
             catch { print("something went wrong in fridge.json")}
         }
     }
-    
 }
 
 extension FoodEditViewController: UIScrollViewDelegate {

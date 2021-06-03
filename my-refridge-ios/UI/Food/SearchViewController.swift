@@ -8,7 +8,7 @@
 import UIKit
 
 class SearchViewController: UIViewController {
-    
+
     var wholeFoods: [Food]?
     
     var fridge: Fridge? {
@@ -163,6 +163,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         cell = tableView.dequeueReusableCell(withIdentifier: "FoodTableViewCell", for: indexPath) as! FoodTableViewCell
         
+        cell.isSearching = true
         cell.food = foods?[indexPath.row]
         cell.selectionStyle = .none
 
@@ -213,6 +214,3 @@ extension SearchViewController: UITextFieldDelegate {
         })
     }
 }
-
-
-

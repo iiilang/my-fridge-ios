@@ -19,6 +19,6 @@ struct Fridge: Codable {
 }
 
 enum FridgeType: String, Codable {
-    case REFRE = "냉장/냉동"
+    case REFREGERATOR = "냉장/냉동"
     case ROOM = "실온"
 }

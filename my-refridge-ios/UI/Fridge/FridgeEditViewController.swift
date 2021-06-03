@@ -368,7 +368,7 @@ class FridgeEditViewController: UIViewController {
         var centerX = -46.25
         if sender == typeIceButton {
             centerX = -46.25
-            fridge?.fridgeType = .REFRE
+            fridge?.fridgeType = .REFREGERATOR
             typeIceButton.setTitleColor(.white, for: .normal)
             typeRoomButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
         } else if sender == typeRoomButton {
@@ -596,7 +596,7 @@ class FridgeEditViewController: UIViewController {
         }
         
         var sCenter = typeIceButton.snp.centerX
-        if fridge?.fridgeType == .REFRE {
+        if fridge?.fridgeType == .REFREGERATOR {
             sCenter = typeIceButton.snp.centerX
             typeIceButton.setTitleColor(.white, for: .normal)
             typeRoomButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)

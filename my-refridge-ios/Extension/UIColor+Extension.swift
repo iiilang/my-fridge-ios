@@ -25,7 +25,7 @@ extension UIColor {
     }
     
     static func refridgeColor(color: Color) -> UIColor {
-        return UIColor(hex: color.rawValue) ?? UIColor(red: 1, green: 0, blue: 0, alpha: 1)
+        return UIColor(hex: color.rawValue) ?? UIColor(red: 0, green: 0, blue: 0, alpha: 1)
     }
     
     public convenience init?(hex: String) {

@@ -12,7 +12,16 @@ target 'my-refridge-ios' do
   pod 'Alamofire', '~> 5.2'
   pod 'ObjectMapper', '~> 3.5'
 
+  pod 'ReachabilitySwift'
 
   # Pods for my-refridge-ios
+
+  post_install do |installer|
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_setting['IPHONES_DEPLOYMENT_TARGET'] = '9.0'
+      end
+    end
+  end
 
 end

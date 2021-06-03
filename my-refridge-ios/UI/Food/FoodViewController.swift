@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 protocol sendFoodToFridgeDelegate {
     func sendFoodtoFridge(fridge: Fridge, fridgeTag: Int)
@@ -13,6 +14,7 @@ protocol sendFoodToFridgeDelegate {
 }
 
 class FoodViewController: UIViewController {
+
     // MARK: - variables
     
     var fridgeTag: Int = -1
@@ -24,7 +26,7 @@ class FoodViewController: UIViewController {
             titleLabel.text = fridge?.fridgeName
             
             
-            if fridge?.fridgeType == .REFRE {
+            if fridge?.fridgeType == .REFREGERATOR {
                 typeLabel.text = "냉장"
                 typeView.backgroundColor = UIColor.refridgeColor(color: .orange)
                 iceView.isHidden = false
@@ -218,7 +220,7 @@ class FoodViewController: UIViewController {
             typeIceButton.setTitleColor(UIColor.refridgeColor(color: .gray), for: .normal)
             
             foods = fridge?.foods.filter { food in
-                food.foodType == .REF
+                food.foodType == .REFRIGERATED
             }
             tableView.reloadData()
         } else if sender == typeIceButton {
@@ -229,7 +231,7 @@ class FoodViewController: UIViewController {
             typeIceButton.setTitleColor(.white, for: .normal)
             
             foods = fridge?.foods.filter { food in
-                food.foodType == .FRE
+                food.foodType == .FROZEN
             }
             tableView.reloadData()
         }
@@ -243,16 +245,17 @@ class FoodViewController: UIViewController {
     }
     
     
-    
     @objc func pressPlusButton() {
         var type: FoodType
         
-        if self.fridge?.fridgeType == .REFRE {
-            type = FoodType.REF
+        if self.fridge?.fridgeType == .REFREGERATOR {
+            type = FoodType.REFRIGERATED
         } else {
             type = FoodType.ROOM
         }
-        let food = Food(foodName: "", foodType: type, foodMemo: "", expireAt: Date(), registeredDate: Date())
+
+        let food = Food(foodName: "", foodType: type, foodMemo: "", expireAt: Date().dateToString(), createdAt: Date().dateToString(), fridgeId: self.fridgeTag)
+        // TODO: - fridgeId 수정 필요..
         
         let VC = FoodEditViewController(fridgeTag: fridgeTag, fridge: self.fridge!, food: food, edit: false, tag: -1)
         //VC.fridge = self.fridge
@@ -260,11 +263,13 @@ class FoodViewController: UIViewController {
         navigationController?.pushViewController(VC, animated: true)
     }
     
+    
+    // MARK: - date string으로 바뀌어서 정렬 수정해야함.
     @objc func changeSort() {
         if sortButton.titleLabel?.text == "유통기한순" {
             sortButton.setTitle("등록일순", for: .normal)
             self.foods?.sort {
-                $0.registeredDate < $1.registeredDate
+                $0.createdAt < $1.createdAt
             }
             tableView.reloadData()
             
@@ -417,6 +422,7 @@ extension FoodViewController: UITableViewDelegate, UITableViewDataSource {
         cell = tableView.dequeueReusableCell(withIdentifier: "FoodTableViewCell", for: indexPath) as! FoodTableViewCell
         cell.selectionStyle = .none
         
+        cell.isSearching = false
         cell.food = foods?[indexPath.row]
         cell.tag = indexPath.row
 
@@ -438,23 +444,51 @@ extension FoodViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let action = UIContextualAction(style: .normal, title: nil) { (action, view, completion) in
-            self.foods?.remove(at: indexPath.row)
-            self.fridge?.foods = self.foods ?? [Food]()
-            self.foodfridgeDelegate?.sendFoodtoFridge(fridge: self.fridge!, fridgeTag: self.fridgeTag)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-            completion(true)
+
+            self.deleteFood(foodId: (self.foods?[indexPath.row].foodId)!) { deleted in
+                print(deleted)
+                if deleted {
+                    self.foods?.remove(at: indexPath.row)
+                    self.fridge?.foods = self.foods ?? [Food]()
+                    self.foodfridgeDelegate?.sendFoodtoFridge(fridge: self.fridge!, fridgeTag: self.fridgeTag)
+                    tableView.deleteRows(at: [indexPath], with: .fade)
+                    completion(true)
+                }
+            }
         }
     
-        
         action.backgroundColor = UIColor.refridgeColor(color: .red)
         action.image = UIImage(named: "swipeToDelete")
-        
         
         let configuration = UISwipeActionsConfiguration(actions: [action])
         configuration.performsFirstActionWithFullSwipe = false
         return configuration
+    }
+    
+    
+    func deleteFood(foodId: Int, handler: @escaping (Bool) -> Void) {
+        var deleted = false
+        let urlString = url + "/api/v1/foods/\(String(describing: foodId))"
+        
+        AF.request(urlString,
+                   method: .delete
+        )
+        .responseJSON { response in
+            
+            switch response.result {
+            case .success:
+                if response.response?.statusCode == 204 {
+                    deleted = true
+                    handler(deleted)
+                }
+            case .failure(let error):
+                print(error)
+                return
+            }
+        }
         
     }
+      
 }
 
 extension FoodViewController: SendFoodDelegate {
