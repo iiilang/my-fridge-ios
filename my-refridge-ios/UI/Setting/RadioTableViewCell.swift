@@ -8,7 +8,7 @@
 import UIKit
 
 protocol RadioTableViewCellDelegate {
-    
+    func tapRadioButton(sender: UIButton)
 }
 class RadioTableViewCell: BaseTableViewCell {
 
@@ -18,7 +18,7 @@ class RadioTableViewCell: BaseTableViewCell {
         }
     }
     
-    //var cellDelegate: RadioTableViewCellDelegate?
+    var cellDelegate: RadioTableViewCellDelegate?
 
     private let titleLabel: UILabel = {
         let lbl = UILabel()
@@ -58,9 +58,10 @@ class RadioTableViewCell: BaseTableViewCell {
         if isSelected {
             deselectOtherButton()
         }
+        
         //let tableView = self.superview as! UITableView
         //let tappedCellIndexPath = tableView.indexPath(for: self)!
-        //cellDelegate?.didToggleRadioButton(tappedCellIndexPath)
+        cellDelegate?.tapRadioButton(sender: radioButton)
     }
     
     func deselectOtherButton() {

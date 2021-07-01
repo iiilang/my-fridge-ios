@@ -7,11 +7,31 @@
 
 import UIKit
 
+protocol DatePickerTableViewCellDelegate {
+    func chooseAlarmTime(time: Date)
+}
+
 class DatePickerTableViewCell: BaseTableViewCell {
 
+    
+    var cellDelegate: DatePickerTableViewCellDelegate?
+    
     var title: String? {
         didSet {
             titleLabel.text = title
+        }
+    }
+    
+    var time: Date? {
+        didSet {
+            //초기 date 설정
+            
+            let dateFormatter: DateFormatter = DateFormatter()
+            dateFormatter.locale = Locale(identifier: "ko_KR")
+            dateFormatter.dateFormat = "a hh:mm"
+            
+            let time: String = dateFormatter.string(from: time ?? Date())
+            pickField.text = time
         }
     }
 
@@ -26,7 +46,7 @@ class DatePickerTableViewCell: BaseTableViewCell {
         let field = UITextField()
         field.font = UIFont.notoSansKR(size: 15, family: .Regular)
         field.tintColor = .clear
-        field.text = "오후 6:30"
+        //field.text = "오후 6:30"
         return field
     }()
     
@@ -50,6 +70,7 @@ class DatePickerTableViewCell: BaseTableViewCell {
         let selectedDate: String = dateFormatter.string(from: sender.date)
         pickField.text = selectedDate
         
+        cellDelegate?.chooseAlarmTime(time: sender.date)
     }
     
     override func setup() {
@@ -61,6 +82,7 @@ class DatePickerTableViewCell: BaseTableViewCell {
         }
         pickField.inputView = picker
         picker.addTarget(self, action: #selector(setAlarmTime), for: .valueChanged)
+        
     }
     
     override func bindConstraints() {

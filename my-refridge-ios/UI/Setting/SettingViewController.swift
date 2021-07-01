@@ -15,10 +15,14 @@ class SettingViewController: UIViewController {
     let alarmTypes: [String] = ["식품별로 따로 알림", "식품 모아서 한 번에 알림"]
     let alarmTimes: [String] = ["알림 시각"]
     
-    var allowNoti: Bool = true
-    var dayNoti: [Bool] = [true, true]
-    var allNoti: Bool = true
-    var time: Date = Date()
+    
+    var setting: Setting = Setting()
+    
+//    var allowNoti: Bool = true
+//    var dayNoti: [Bool] = [true, true]
+//    var typeNoti: Bool? = true
+//    var time: Date = Date()
+    
     
     private let backButton: UIButton = {
         let btn = UIButton()
@@ -63,6 +67,8 @@ class SettingViewController: UIViewController {
     }
     
     func setup() {
+        readSettingList()
+        
         self.view.addSubview(backButton)
         self.view.addSubview(titleLabel)
         self.view.addSubview(line)
@@ -74,6 +80,13 @@ class SettingViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+        //tap gesture recognizer
+        let singleTapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapScrollView))
+        singleTapGestureRecognizer.numberOfTapsRequired = 1
+        singleTapGestureRecognizer.isEnabled = true
+        singleTapGestureRecognizer.cancelsTouchesInView = false
+        self.view.addGestureRecognizer(singleTapGestureRecognizer)
     }
     
     func bindConstraints() {
@@ -169,15 +182,27 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "ToggleTableViewCell", for: indexPath) as! ToggleTableViewCell
             cell.title = pushAlarms[indexPath.row]
-            cell.toggle.isOn = allowNoti
+            cell.toggle.isOn = setting.allowNoti
             
             cell.contentView.isUserInteractionEnabled = false
+            cell.cellDelegate = self
+            
+            cell.toggle.tag = 0
+            
             return cell
         } else if indexPath.section == 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "ToggleTableViewCell", for: indexPath) as! ToggleTableViewCell
             cell.title = alarmCycles[indexPath.row]
-            cell.toggle.isOn = dayNoti[indexPath.row]
             
+            cell.cellDelegate = self
+            
+            if setting.allowNoti {
+                cell.toggle.isOn = setting.dayNoti[indexPath.row]
+            } else {
+                cell.toggle.isOn = false
+            }
+            
+            cell.toggle.tag = indexPath.section + indexPath.row
             cell.contentView.isUserInteractionEnabled = false
             return cell
         } else if indexPath.section == 2 {
@@ -187,25 +212,63 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
             cell.title = item
             
             if indexPath.row == 0 {
-                cell.radioButton.isSelected = allNoti
+                cell.radioButton.isSelected = setting.typeNoti ?? false
             } else if indexPath.row == 1 {
-                cell.radioButton.isSelected = !allNoti
+                let reverseTypeNoti = (setting.typeNoti == nil) ? false : !(setting.typeNoti!)
+                cell.radioButton.isSelected = reverseTypeNoti
             }
 
-            //cell.cellDelegate = self
-            
+            cell.cellDelegate = self
+            cell.radioButton.tag = indexPath.row
             cell.contentView.isUserInteractionEnabled = false
             return cell
         } else if indexPath.section == 3 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "DatePickerTableViewCell", for: indexPath) as! DatePickerTableViewCell
             cell.title = alarmTimes[indexPath.row]
-            
-            cell.contentView.isUserInteractionEnabled = false 
+            cell.time = setting.time
+            cell.cellDelegate = self
+            cell.contentView.isUserInteractionEnabled = false
+            cell.tag = indexPath.section + indexPath.row
             return cell
         }
         
         return UITableViewCell()
     }
+    
+    
+    //save to json
+    func readSettingList() {
+        let jsonDecoder = JSONDecoder()
+        let file = "setting.json"
+        
+        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            let fileURL = dir.appendingPathComponent(file)
+            
+            do {
+                let settingData = try Data(contentsOf: fileURL)
+                self.setting = try jsonDecoder.decode(Setting.self, from: settingData)
+            }
+            catch { print("something went wrong in setting.json")}
+        }
+    }
+    
+    func saveSettingToJsonFile() {
+        let file = "setting.json"
+        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            
+            let fileURL = dir.appendingPathComponent(file)
+            do {
+                let jsonEncoder = JSONEncoder()
+                jsonEncoder.outputFormatting = .prettyPrinted
+                let jsonData = try! jsonEncoder.encode(setting)
+                
+                try jsonData.write(to: fileURL)
+            }
+            catch { print("can not save in setting.json") }
+        }
+    }
+    
+    
 }
 
 // MARK: - Text Field Delegate
@@ -214,6 +277,11 @@ extension SettingViewController: UITextFieldDelegate {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
+    }
+    
+    @objc func tapScrollView(sender: UITapGestureRecognizer) {
+        self.view.endEditing(true)
+        saveSettingToJsonFile()
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -240,4 +308,56 @@ extension SettingViewController: UITextFieldDelegate {
         })
     }
 
+}
+
+extension SettingViewController: ToggleTableViewCellDelegate {
+    func switchAllowToggle(sender: UISwitch) {
+        if sender.tag == 0 {
+            setting.allowNoti = sender.isOn
+            setting.dayNoti = sender.isOn ? [true, true] : [false, false]
+            setting.typeNoti = (setting.allowNoti) ? true : nil
+    
+            
+            tableView.reloadData()
+        } else if sender.tag == 1 {
+            setting.dayNoti[0] = sender.isOn
+            tableView.reloadData()
+        } else if sender.tag == 2 {
+            setting.dayNoti[1] = sender.isOn
+            
+            tableView.reloadData()
+        }
+        saveSettingToJsonFile()
+    }
+}
+
+extension SettingViewController: RadioTableViewCellDelegate {
+    func tapRadioButton(sender: UIButton) {
+        if sender.tag == 0 {
+            setting.typeNoti = true
+            setting.allowNoti = true
+            setting.dayNoti[0] = true
+            tableView.reloadData()
+        } else {
+            setting.typeNoti = false
+            setting.allowNoti = true
+            setting.dayNoti[0] = true
+            tableView.reloadData()
+        }
+        saveSettingToJsonFile()
+    }
+
+}
+
+extension SettingViewController: DatePickerTableViewCellDelegate {
+    func chooseAlarmTime(time: Date) {
+        setting.time = time
+        
+        setting.allowNoti = true
+        setting.dayNoti[0] = true
+        setting.typeNoti = true
+        
+        tableView.reloadData()
+        saveSettingToJsonFile()
+    }
 }

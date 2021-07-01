@@ -61,6 +61,6 @@ class ToggleTableViewCell: BaseTableViewCell {
     }
     
     @objc func switchToggle(sender: UISwitch) {
-        //cellDelegate?.switchAllowToggle(sender: sender)
+        cellDelegate?.switchAllowToggle(sender: sender)
     }
 }
