@@ -8,7 +8,7 @@
 import Foundation
 
 struct Fridge: Codable {
-    
+    var fridgeId: Int
     var fridgeName: String
     var fridgeIcon: String
     var fridgeBasic: Bool = false

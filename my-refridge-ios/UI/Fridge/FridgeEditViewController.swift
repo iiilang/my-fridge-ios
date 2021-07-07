@@ -6,9 +6,10 @@
 //
 
 import UIKit
+import Alamofire
 
 protocol SendFridgeDelegate {
-    func sendFridge(data: Fridge, edit: Bool, tag: Int)
+    func sendFridge(fridge: Fridge, edit: Bool)
 }
 
 class FridgeEditViewController: UIViewController {
@@ -20,23 +21,19 @@ class FridgeEditViewController: UIViewController {
     var fridgeTag: Int = -1
     var fridgeDelegate: SendFridgeDelegate?
     
+    var firstType: FridgeType
+    
     // MARK: - Initializaition
     
     init(fridge: Fridge, edit: Bool) {
         self.fridge = fridge
+        self.firstType = fridge.fridgeType
         titleLabel.text = edit ? "냉장고 편집" : "냉장고 추가"
         self.edit = edit
         super.init(nibName: nil, bundle: nil)
     }
     
-    init(fridge: Fridge, edit: Bool, fridgeTag: Int) {
-        self.fridge = fridge
-        titleLabel.text = edit ? "냉장고 편집" : "냉장고 추가"
-        self.edit = edit
-        self.fridgeTag = fridgeTag
-        super.init(nibName: nil, bundle: nil)
-    }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -312,8 +309,131 @@ class FridgeEditViewController: UIViewController {
             memoField.resignFirstResponder()
             showToast(message: "이름을 넣어주세요.")
         } else {
-            fridgeDelegate?.sendFridge(data: fridge!, edit: self.edit, tag: self.fridgeTag)
+            let foodType = (fridge?.fridgeType == .REFREGERATOR) ? FoodType.REFRIGERATED : FoodType.ROOM
+            if edit {
+                if firstType != fridge?.fridgeType { //냉장고 type 바뀜.
+                    for index in 0..<fridge!.foods.count {
+                        fridge!.foods[index].foodType = foodType //foods 전체 타입 바뀌도록.
+                    }
+                }
+                editFridge()
+            } else {
+                
+                saveFridge()
+            }
+            fridgeDelegate?.sendFridge(fridge: fridge!, edit: self.edit)
             navigationController?.popViewController(animated: true)
+        }
+    }
+    
+    func editFridge() {
+        let urlString = url + "/api/v1/fridges/\(String(describing: fridge?.fridgeId))"
+        
+        let header: HTTPHeaders = [
+            "Content-Type" : "application/json"
+        ]
+        
+
+        let param: Parameters = [
+            "fridgeName": self.fridge!.fridgeName,
+            "fridgeIcon": self.fridge!.fridgeIcon,
+            "fridgeType": self.fridge!.fridgeType,
+            "fridgeBasic": self.fridge!.fridgeBasic,
+            "fridgeMemo": self.fridge!.fridgeMemo
+        ]
+        
+
+        AF.request(
+            urlString,
+            method: .put,
+            parameters: param,
+            encoding: JSONEncoding.default,
+            headers: header
+        )
+        .responseJSON { [self] response in
+            switch response.result {
+            case .success:
+                guard let result = response.data else { return }
+                print( String(decoding: result, as: UTF8.self) )
+                
+                if response.response?.statusCode == 200 {
+                    
+//                    do {
+                        let decoder = JSONDecoder()
+                        //print(result)
+                    self.fridge = try! decoder.decode(Fridge.self, from: result)
+//                    } catch {
+//                        print("food parsing error")
+//                    }
+                    
+                    
+                    self.fridgeDelegate?.sendFridge(fridge: fridge!, edit: self.edit)
+                    //print(self.food!.foodId)
+                    navigationController?.popViewController(animated: true)
+                } else {
+                    showToast(message: "저장에 실패했습니다.")
+                }
+            case .failure(let error):
+                print(error)
+                showToast(message: "저장에 실패했습니다.")
+                return
+            }
+        }
+    }
+    
+    func saveFridge() {
+        
+        let urlString = url + "/api/v1/fridges"
+        
+        let header: HTTPHeaders = [
+            "Content-Type" : "application/json"
+        ]
+        
+        let param: Parameters = [
+            "fridgeName": self.fridge!.fridgeName,
+            "fridgeIcon": self.fridge!.fridgeIcon,
+            "fridgeBasic": self.fridge!.fridgeBasic,
+            "fridgeType": self.fridge!.fridgeType,
+            "fridgeMemo": self.fridge!.fridgeMemo,
+            "userId": userId ?? ""
+        ]
+        
+
+        AF.request(
+            urlString,
+            method: .post,
+            parameters: param,
+            encoding: JSONEncoding.default,
+            headers: header
+        )
+        .responseJSON { [self] response in
+            switch response.result {
+            case .success:
+                guard let result = response.data else { return }
+                print( String(decoding: result, as: UTF8.self) )
+                
+                if response.response?.statusCode == 200 {
+                    
+//                    do {
+                        let decoder = JSONDecoder()
+                        //print(result)
+                        fridge = try! decoder.decode(Fridge.self, from: result)
+//                    } catch {
+//                        print("food parsing error")
+//                    }
+                    
+                    
+                    self.fridgeDelegate?.sendFridge(fridge: fridge!, edit: self.edit)
+                    //print(self.food!.foodId)
+                    navigationController?.popViewController(animated: true)
+                } else {
+                    showToast(message: "저장에 실패했습니다.")
+                }
+            case .failure(let error):
+                print(error)
+                showToast(message: "저장에 실패했습니다.")
+                return
+            }
         }
     }
     

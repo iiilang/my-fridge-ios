@@ -13,8 +13,6 @@ protocol SendFoodDelegate {
     func sendFood(food: Food, edit: Bool, tag: Int, fridgeTag: Int, changeFridgeTag: Int)
 }
 
-let url = "http://ec2-3-34-204-152.ap-northeast-2.compute.amazonaws.com:8080"
-
 class FoodEditViewController: UIViewController {
     
     // MARK: - variables

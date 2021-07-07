@@ -37,6 +37,7 @@ class FoodViewController: UIViewController {
                 iceView.isHidden = true
                 foodTypeView.isHidden = true
             }
+            receiveFoodList()
             foods = fridge?.foods
         }
     }
@@ -282,6 +283,37 @@ class FoodViewController: UIViewController {
         }
     }
     
+    func receiveFoodList() {
+        let urlString = url + "/api/v1/foods/list/\(String(describing: fridge?.fridgeId))"
+        
+        AF.request(
+            urlString
+        ).responseJSON { response in
+            switch response.result {
+            case .success:
+                guard let result = response.data else { return }
+                print( String(decoding: result, as: UTF8.self) )
+                
+                if response.response?.statusCode == 200 {
+                    
+//                    do {
+                        let decoder = JSONDecoder()
+                        self.fridge?.foods = try! decoder.decode([Food].self, from: result)
+                        self.foodfridgeDelegate?.sendFoodtoFridge(fridge: self.fridge!, fridgeTag: self.fridgeTag)
+                        
+//                    } catch {
+//                        print("fridges parsing error")
+//                    }
+                    
+                }
+            case .failure(let error):
+                print(error)
+                return
+            }
+        }
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -446,7 +478,6 @@ extension FoodViewController: UITableViewDelegate, UITableViewDataSource {
         let action = UIContextualAction(style: .normal, title: nil) { (action, view, completion) in
 
             self.deleteFood(foodId: (self.foods?[indexPath.row].foodId)!) { deleted in
-                print(deleted)
                 if deleted {
                     self.foods?.remove(at: indexPath.row)
                     self.fridge?.foods = self.foods ?? [Food]()

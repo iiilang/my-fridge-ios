@@ -7,6 +7,8 @@
 
 import UIKit
 import SnapKit
+import Alamofire
+
 
 class FridgeViewController: UIViewController {
     
@@ -76,7 +78,9 @@ class FridgeViewController: UIViewController {
     }
     
     @objc func addFridge() {
-        let fridge = Fridge(fridgeName: "", fridgeIcon: "broccoli", fridgeType: .REFREGERATOR, fridgeMemo: "")
+        //MARK: - FridgeID...
+        let fridgeId: Int = -1
+        let fridge = Fridge(fridgeId: fridgeId, fridgeName: "", fridgeIcon: "broccoli", fridgeType: .REFREGERATOR, fridgeMemo: "")
         
         let VC = FridgeEditViewController(fridge: fridge, edit: false)
         VC.fridgeDelegate = self
@@ -97,7 +101,9 @@ class FridgeViewController: UIViewController {
         self.view.addSubview(searchButton)
         self.view.addSubview(setButton)
         
+        
         readFridgeList()
+        //receiveFridgeList()
         tableView.delegate = self
         tableView.dataSource = self
         self.view.addSubview(tableView)
@@ -126,20 +132,61 @@ class FridgeViewController: UIViewController {
             make.right.equalTo(self.view).inset(20)
         }
     }
+    
+    
+    
+    // MARK: - Back-end
+    func receiveFridgeList() {
+        let userId = UIDevice.current.identifierForVendor?.uuidString
+        let urlString = url + "/api/v1/fridges/list/\(String(describing: userId))"
+        
+        AF.request(
+            urlString
+        ).responseJSON { response in
+            switch response.result {
+            case .success:
+                guard let result = response.data else { return }
+                print( String(decoding: result, as: UTF8.self) )
+                
+                if response.response?.statusCode == 200 {
+                    
+//                    do {
+                        let decoder = JSONDecoder()
+                        self.fridges = try! decoder.decode([Fridge].self, from: result)
+                        self.saveToJsonFile()
+//                    } catch {
+//                        print("fridges parsing error")
+//                    }
+                    
+                }
+            case .failure(let error):
+                print(error)
+                return
+            }
+        }
+        
+    }
+    
 }
 
 // MARK: - Receive Fridge Data to save in local
 
 extension FridgeViewController: SendFridgeDelegate {
     
-    func sendFridge(data: Fridge, edit: Bool, tag: Int) {
+    func sendFridge(fridge: Fridge, edit: Bool) {
         if edit {
-            self.fridges[tag] = data
-            self.tableView.reloadData()
-            self.saveToJsonFile()
+            for index in 0..<fridges.count {
+                if fridges[index].fridgeId == fridge.fridgeId {
+                    self.fridges[index] = fridge
+                    self.tableView.reloadData()
+                    self.saveToJsonFile()
+                    break
+                }
+            }
+            
         } else {
             if self.fridges.count < 10 {
-                self.fridges.append(data)
+                self.fridges.append(fridge)
                 self.tableView.reloadData()
                 self.saveToJsonFile()
             } else {
@@ -238,20 +285,24 @@ extension FridgeViewController: UITableViewDelegate, UITableViewDataSource {
 // MARK: - CellDelegate for button in table view cell
 
 extension FridgeViewController: FridgeTableViewCellDelegate {
-    func pressMoreButton(_ tag: Int) {
+    func pressMoreButton(_ tag: Int, fridgeId: Int) {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         let defaultAction = UIAlertAction(title: "편집", style: .default) { alert in
-            let VC = FridgeEditViewController(fridge: self.fridges[tag], edit: true, fridgeTag: tag)
+            let VC = FridgeEditViewController(fridge: self.fridges[tag], edit: true)
             VC.fridgeDelegate = self
             self.navigationController?.pushViewController(VC, animated: true)
             self.saveToJsonFile()
         }
         let deleteAction = UIAlertAction(title: "삭제", style: .default) { alert in
-            let indexPath = IndexPath.init(row: tag, section: 0)
-            self.fridges.remove(at: indexPath.row)
-            self.tableView.reloadData()
-            self.saveToJsonFile()
+            self.deleteFridge(fridgeId: fridgeId) { deleted in
+                if deleted {
+                    let indexPath = IndexPath.init(row: tag, section: 0)
+                    self.fridges.remove(at: indexPath.row)
+                    self.tableView.reloadData()
+                    self.saveToJsonFile()
+                }
+            }
         }
         let cancelAction = UIAlertAction(title: "취소", style: .cancel)
         
@@ -265,6 +316,29 @@ extension FridgeViewController: FridgeTableViewCellDelegate {
           return (one.constant < 0) && (one.secondItem == nil) &&  (one.firstAttribute == .width)
         }.first?.isActive = false
     }
+    
+    func deleteFridge(fridgeId: Int, handler: @escaping (Bool) -> Void) {
+        var deleted = false
+        let urlString = url + "/api/v1/fridges/\(String(describing: fridgeId))"
+        
+        AF.request(urlString,
+                   method: .delete
+        )
+        .responseJSON { response in
+            
+            switch response.result {
+            case .success:
+                if response.response?.statusCode == 204 {
+                    deleted = true
+                    handler(deleted)
+                }
+            case .failure(let error):
+                print(error)
+                return
+            }
+        }
+    }
+    
 }
 
 //extension FridgeViewController: SendFoodDelegate {

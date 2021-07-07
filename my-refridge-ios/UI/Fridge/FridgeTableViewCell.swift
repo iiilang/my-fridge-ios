@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 protocol FridgeTableViewCellDelegate {
-    func pressMoreButton(_ tag: Int)
+    func pressMoreButton(_ tag: Int, fridgeId: Int)
 }
 
 class FridgeTableViewCell: BaseTableViewCell {
@@ -112,7 +112,7 @@ class FridgeTableViewCell: BaseTableViewCell {
     }()
     
     @objc func pressMoreButton(sender: UIButton) {
-        cellDelegate?.pressMoreButton(sender.tag)
+        cellDelegate?.pressMoreButton(sender.tag, fridgeId: fridge!.fridgeId)
     }
     
     override func setup() {

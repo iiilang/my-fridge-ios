@@ -45,8 +45,9 @@ class FoodTableViewCell: BaseTableViewCell {
             }
             
             if isSearching {
-                let fridgeName = "냉장고 이름"
-                memoLabel.text = fridgeName
+                let fridgeName = food?.fridgeId
+                
+                memoLabel.text = "\(String(describing: fridgeName))"
             } else {
                 let memo = (food?.foodMemo == "") ? " " : food?.foodMemo
                 memoLabel.text = memo

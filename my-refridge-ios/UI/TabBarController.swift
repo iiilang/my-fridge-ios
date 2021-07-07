@@ -6,11 +6,13 @@
 //
 
 import UIKit
+import Alamofire
+
+let url = "http://ec2-3-34-204-152.ap-northeast-2.compute.amazonaws.com:8080"
+var userId: Int?
 
 class TabBarController: UITabBarController {
-    
-    //var foods = [Food]()
-    var model = FoodModel()
+
     
     let tabBarHeight: CGFloat = 75
     
@@ -18,26 +20,68 @@ class TabBarController: UITabBarController {
         super.viewWillAppear(animated)
         
         setUpTabBar()
+        
+        //print(UIDevice.current.identifierForVendor?.uuidString)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        model.delegate = self
-        model.ping()
-        //model.getFoods()
+        
+        //처음 실행 시 userId 받아와서 저장.
+        let isFirstLaunch = Storage.isFirstLaunch()
+        if isFirstLaunch {
+            saveUser { id in
+                if id != nil {
+                    let defaults = UserDefaults.standard
+                    defaults.set(id, forKey: "userId")
+                    
+                    userId = id
+                }
+            }
+        } else {
+            let userIdAny = UserDefaults.standard.object(forKey: "userId") as! Int
+            userId = userIdAny
+        }
     }
     
-    /*
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
+    func saveUser(handler: @escaping (Int) -> Void) {
+        let uuid = UIDevice.current.identifierForVendor?.uuidString
+        let urlString = url + "/api/v1/users"
         
-        let tabBarHeight: CGFloat = self.tabBarHeight
-        var tabFrame = tabBar.frame
-        tabFrame.size.height = tabBarHeight
-        tabFrame.origin.y = view.frame.size.height - tabBarHeight
-        tabBar.frame = tabFrame
+        let header: HTTPHeaders = [
+            "Content-Type" : "application/json"
+        ]
         
-    }*/
+        let param: Parameters = [
+            "uuid" : uuid
+        ]
+        
+        
+        AF.request(
+            urlString,
+            method: .post,
+            parameters: param,
+            encoding: JSONEncoding.default,
+            headers: header
+        )
+        .responseJSON { response in
+            switch response.result {
+            case .success:
+                guard let result = response.data else { return }
+                print( String(decoding: result, as: UTF8.self) )
+                
+                if response.response?.statusCode == 200 {
+                    let decoder = JSONDecoder()
+                    
+                    let userInfo = try! decoder.decode(UserInfo.self, from: result)
+                    handler(userInfo.id)
+                }
+            case .failure(let error):
+                print(error)
+                return
+            }
+        }
+    }
     
     private func setUpTabBar() {
         
@@ -58,6 +102,8 @@ class TabBarController: UITabBarController {
         
         self.viewControllers = [refridgeViewController, shoppingViewController]
     }
+    
+    
 }
 
 extension TabBarController: FoodModelProtocol {
